@@ -1,0 +1,58 @@
+import { NestFactory, HttpAdapterHost } from '@nestjs/core';
+import { AppModule } from './app.module';
+import {
+  FastifyAdapter,
+  NestFastifyApplication,
+} from '@nestjs/platform-fastify';
+import { MyLoggerService } from './my-logger/my-logger.service';
+import { ValidationPipe } from '@nestjs/common';
+import { AllExceptionsFilter } from './all-exceptions.filter';
+import fastifyStatic from '@fastify/static';
+import { join } from 'path';
+import { setupSwagger } from './config/Swagger';
+import fastifyCookie from '@fastify/cookie';
+
+async function bootstrap() {
+  // const app = await NestFactory.create(AppModule, {
+  //   bufferLogs: true,
+  // });
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+  );
+  app.enableShutdownHooks();
+  // 1. Configurar Prefixo primeiro
+  app.setGlobalPrefix('api');
+  // 2. Registrar Plugins com cast de tipo para evitar o erro que você postou
+  await app.register(fastifyCookie as any, {
+    secret: process.env.JWT_SECRET,
+    hook: 'onRequest',
+    parseOptions: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+    },
+  });
+
+  await app.register(fastifyStatic as any, {
+    root: join(__dirname, '..', 'public'),
+    prefix: '/public/',
+  });
+  // 3. Configurações Globais
+  app.useGlobalFilters(new AllExceptionsFilter());
+  app.enableCors();
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true, // Remove campos que não estão no DTO
+      forbidNonWhitelisted: true, // Dá erro se enviarem campos extras
+      transform: true, // Transforma o JSON na instância da classe DTO
+    }),
+  );
+  // 4. Swagger (Depois do prefixo, antes do listen)
+  setupSwagger(app);
+  app.useLogger(app.get(MyLoggerService));
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+}
+bootstrap().catch((err) => {
+  console.error(err);
+});

@@ -1,0 +1,14 @@
+services:
+  toto-task-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '3001:3000'
+    env_file:
+      - .env
+    environment:
+      PORT: '3000'
+    volumes:
+      - ./src:/usr/src/app/src
+    command: npm run start:docker:dev

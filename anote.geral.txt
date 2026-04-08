@@ -1,0 +1,24 @@
+COMMITS
+Tipos Principais de Commit
+
+    feat: Usado quando você adiciona uma nova funcionalidade ao projeto.
+
+    fix: Usado quando você corrige um bug ou erro de lógica.
+
+    docs: Alterações exclusivas na documentação (ex: README.md, comentários no código).
+
+    style: Mudanças que não afetam o sentido do código (ajuste de identação, ponto e vírgula esquecido, formatação de espaços). Não confunda com mudanças de CSS/Design.
+
+    refactor: Uma alteração no código que nem corrige um bug nem adiciona uma funcionalidade, mas melhora a estrutura do código existente.
+
+    perf: Mudança de código focada especificamente em melhorar o desempenho/performance.
+
+    test: Adição de testes ausentes ou correção de testes existentes.
+
+    build: Alterações que afetam o sistema de construção ou dependências externas (ex: npm, Maven, Gradle).
+
+    ci: Mudanças em arquivos de configuração de Integração Contínua (ex: GitHub Actions, Travis CI, Jenkins).
+
+    chore: Tarefas repetitivas ou de manutenção que não alteram o código de produção nem os arquivos de teste (ex: atualizar o .gitignore).
+
+    revert: Usado para desfazer (reverter) um commit anterior.

@@ -1,0 +1,124 @@
+ 1985  npm i -g @nestjs/cli 
+ 1986  nest new toto-task-app
+ 1987  cd toto-task-app/
+ 1988  code .
+ 1989  npm install prisma --save-dev
+ 1990  npx prisma
+ 1991  npx prisma init
+ npm install @prisma/client@6.19.2 
+ npm install prisma-generator-nestjs-dto --legacy-peer-deps
+ npx prisma migrate dev --name init 
+ alterar para commonjs no tsconifg e e packege
+ npm install @nestjs/mapped-types --legacy-peer-deps
+ npm i @nestjs/throttler --legacy-peer-deps
+ npm install @fastify/static --legacy-peer-deps 
+ npm install @nestjs/jwt @nestjs/passport passport passport-jwt bcrypt --legacy-peer-deps 
+ npm i cookie-parser --legacy-peer-deps 
+npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --legacy-peer-deps
+ npm install @nestjs/config --legacy-peer-deps 
+ npm install  zod --legacy-peer-deps 
+  npm i  @nestjs/platform-fastify  --legacy-peer-deps  
+  npm install fastify --legacy-peer-deps  
+  npm install @nestjs-modules/mailer nodemailer --legacy-peer-deps  
+  npm install --save @nestjs/schedule --legacy-peer-deps 
+  npm install reflect-metadata --legacy-peer-deps 
+ nest g resource employees
+ desativar   // eslintPluginPrettierRecommended,
+nest g module my-logger
+ @Module({
+  imports: [
+    // Ferramentas prontas que vêm de fora (ex: Throttler, PrismaModule)
+  ],
+  controllers: [
+    // Quem recebe os pedidos (Rotas/Endpoints)
+  ],
+  providers: [
+    // Quem resolve os pedidos (Services, Banco de Dados)
+  ],
+  exports: [
+    // O que este módulo deixa os outros usarem (opcional)
+  ]
+})
+estrutura 
+src/
+├── common/                 # Tudo que é compartilhado entre módulos
+│   ├── decorators/         # Decoradores customizados (ex: @GetUser)
+│   ├── filters/            # Seus filtros (ex: all-exceptions.filter.ts)
+│   ├── guards/             # Guards de Auth e Roles
+│   ├── interceptors/       # Transformação de dados (ex: logging.interceptor)
+│   ├── middleware/         # Middlewares express/fastify
+│   └── pipes/              # Pipes de validação customizados
+├── config/                 # Configurações globais e Swagger
+│   ├── database.config.ts
+│   └── swagger.config.ts
+├── modules/                # Onde a lógica de negócio vive (Um para cada recurso)
+│   ├── auth/               # Módulo de Autenticação
+│   │   ├── dto/            # Data Transfer Objects (login.dto.ts)
+│   │   ├── strategies/     # Estratégias Passport (jwt.strategy.ts)
+│   │   ├── auth.controller.ts
+│   │   ├── auth.module.ts
+│   │   └── auth.service.ts
+│   ├── employees/          # Módulo de Funcionários
+│   │   ├── dto/            # create-employee.dto.ts
+│   │   ├── entities/       # Classes ou tipos que representam o objeto
+│   │   ├── employees.controller.ts
+│   │   ├── employees.module.ts
+│   │   ├── employees.service.ts
+│   │   └── employees.service.spec.ts # Testes unitários
+│   └── users/              # Módulo de Usuários
+├── prisma/                 # Camada de Dados (Database Service)
+│   ├── prisma.module.ts
+│   └── prisma.service.ts
+├── app.module.ts           # Módulo raiz que orquestra tudo
+└── main.ts                 # Ponto de entrada (Bootstrap)
+
+configuracao oauth2
+1- criar um projeto 
+2- api e servicos
+3- library enable google gmail 
+4-  ouath consent screen 
+5-  audiente colocar teste user 
+6- clients --> web application -->  nome qualquer --> adicionar url de redirect https://developers.google.com/oauthplayground
+7 - salvar e colocar as credenciais no env 
+8 - pegar refesh token na url https://developers.google.com/oauthplayground/
+9 - 
+1 - step 1 ==> gmail api v1
+2- exchange authorization code for tokens 
+3 - ele vai disponibizar refresh token 
+
+
+. POST /auth/signup (Cadastro)
+    Decorador: @Public()
+    Corpo (Body): CreateUserDto (email, password).
+    O que faz: Cria o usuário no banco de dados (usando hash de senha com bcrypt) e, opcionalmente, já retorna os tokens de acesso para o usuário não precisar logar logo após se cadastrar.
+
+2. POST /auth/login (Login)
+    Decorador: @Public()
+    Corpo (Body): AuthDto (email, password).
+    O que faz: Valida as credenciais. Se estiverem corretas, gera o par de tokens: Access Token (curta duração) e Refresh Token (longa duração).
+    Dica: O Refresh Token deve ser enviado via Cookie HttpOnly para segurança.
+
+3. POST /auth/logout (Sair)
+    Decorador: Privado (Não usa @Public()).
+    Corpo: Vazio.
+    O que faz: Invalida o Refresh Token do usuário no banco/Redis e limpa o cookie do navegador. Como é privada, você usa o @GetUser('id') para saber quem está saindo.
+
+4. POST /auth/refresh (Atualizar Token)
+    Decorador: Privado (Mas usa um Guard específico para Refresh Token, o RtGuard).
+    Corpo: Vazio (lê do cookie ou header).
+    O que faz: Quando o Access Token expira, o frontend chama essa rota para obter um novo Access Token sem pedir a senha do usuário novamente.
+
+5. POST /auth/forgot-password (Esqueci a Senha)
+    Decorador: @Public()
+    Corpo: { "email": string }.
+    O que faz: Gera um token temporário, salva no banco com expiração (ex: 15 min) e envia um link de recuperação por e-mail.
+
+6. POST /auth/reset-password (Redefinir Senha)
+    Decorador: @Public()
+    Corpo: { "token": string, "newPassword": string }.
+    O que faz: Valida o token enviado por e-mail. Se for válido, atualiza a senha do usuário e deleta o token de recuperação.
+
+
+*** ATENTO 
+NAO PRECISA FAZER TRYCATCH PORQUE O ALL EXPETIONS filter
+JA CUIDA E LANCA ERRO 

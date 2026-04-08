@@ -1,0 +1,67 @@
+1 - dockerfile 
+1-from node:20.17.0
+2-WORKDIR /usr/src/app
+3-criar .dockergitigonre
+4- COPY . .
+5 CMD 
+2- docker build 
+3-  docker build -t nest-docker .
+FROM node:20.17.0
+
+FROM node:22-bookworm-slim
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+
+CMD ["npm", "run", "start:dev"]
+ docker run --env-file .env -p 3000:3000 nest-docker:latest
+production
+FROM node:22-bookworm-slim
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+RUN npm ci
+
+COPY . .
+RUN npx prisma generate
+RUN npnm run build
+RUN rm -rf ./src
+EXPOSE 3000
+CMD ["npm", "run", "start:prod"]
+docker build -t nestjs-prod -f Dockerfile.prod .
+ docker-compose up --build
+ --------------------
+ ocker start id_do_container --> executa remotamente
+docker exec -it id_do_container bash -->  entra no container
+docker inspect 8c36706dcc48 ---> configuracaoes do ambiente
+docker run -p 2300:5000 -d docker-python:latest --> varia as portas 
+docker rm id_do_container --> remove o container 
+docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag --> cria uma imagem mysql
+docker run --name  python-mysql-name -e MYSQL_ROOT_PASSWORD=root -p 3306:3306 -v mysqlVolume:/var/lib/mysql -d mysql:latest
+docker exec -i c99abdb3cfcb mysql -u root -proot < ./Schema.sql --> cria o banco de dados 
+docker exec -it  c99abdb3cfcb bash 
+docker network create mynet
+docker run-e MYSQL_ROOT_PASSWORD=root  --name mysqldb  --network mynet -v mysqlVolume:/var/lib/mysql -d mysql:latest
+docker build . --tag docker-pythonv2
+docker run  -p 3000:5000 --network mynet docker-pythonv2 
+docker build -t container ==> seria rebuildar o projeto do vscode para o container local 
+-----------------
+docker exec -it 46e920652f65 /bin/sh serve para executar e entrar no conttainer 
+docker volume create nestjsVlume
+docker run --interactive --tty --name my-ubuntu-container ubuntu:22.04
+docker run -it --rm ubuntu:22.04 
+root@ce25d2133b1a:/# mkdir my-data
+root@ce25d2133b1a:/# echo "hello from container" > /my-data/hello.txt
+docker volume create my-volume
+docker run -it --rm --mount source=my-volume,destination=/my-data ubuntu:22.04
+https://github.com/sidpalas/devops-directive-docker-course/tree/main/04-using-3rd-party-containers
+docker run  -it --rm --mount type=bind,source="${PWD}"/my-data,destination=/my-data ubuntu:22.04
+------------------------
+container registry  
+dockerhub 
+github container 
