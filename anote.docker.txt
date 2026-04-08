@@ -65,3 +65,13 @@ docker run  -it --rm --mount type=bind,source="${PWD}"/my-data,destination=/my-d
 container registry  
 dockerhub 
 github container 
+-------------
+tagging images
+8images can have multiple tags 
+---------------------
+-d 
+-- entrypoint
+--env ,--e ,-file--init,--interactive, --i --tty , --mount
+--name --network , --net , --plataform,--publish , --p --restart, --rm 
+
+docker run -d --name db --network my-network -e POSTGRES_PASSWORD=admin -v pgdata:/var/lib/postgresql/data -p 5433:5432 --restart unless-stopped postgres:15.1-alpine 
