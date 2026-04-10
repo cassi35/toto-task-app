@@ -7,6 +7,8 @@ import {
   Query,
   Res,
   HttpCode,
+  UseGuards,
+  Req,
   HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -19,7 +21,11 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { ResendVerificationTokenDto } from './dto/resend-verification.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
-import { FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
+import { GoogleAuthGuard } from './guards/apple.guard';
+
+import { MicrosoftGuard } from './guards/microsoft.guard';
+import { OauthUser } from 'src/types';
 
 @Controller('auth')
 export class AuthController {
@@ -63,6 +69,37 @@ export class AuthController {
   @Get('verify-email')
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
+  }
+  @Public()
+  @Get('google')
+  async googleAuth(@Res({ passthrough: true }) reply: FastifyReply) {
+    // Monta a URL do Google manualmente e redireciona
+    return this.authService.redirect('google', reply);
+  }
+
+  @Public()
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  googleAuthCallback(
+    @Req() req: FastifyRequest & { user: OauthUser },
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.authService.loginOauth(req.user, reply);
+  }
+
+  @Public()
+  @Get('microsoft')
+  async microsoftAuth(@Res() reply: FastifyReply) {
+    return this.authService.redirect('microsoft', reply);
+  }
+  @Public()
+  @Get('microsoft/callback')
+  @UseGuards(MicrosoftGuard)
+  microsoftAuthCallback(
+    @Req() req: FastifyRequest & { user: OauthUser },
+    @Res({ passthrough: true }) reply: FastifyReply,
+  ) {
+    return this.authService.loginOauth(req.user, reply);
   }
 
   @Public()

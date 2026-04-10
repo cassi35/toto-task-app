@@ -19,7 +19,6 @@ import { EmailModule } from './modules/email/email.module';
 import { TokenService } from './modules/token/token.service';
 import { TokenModule } from './modules/token/token.module';
 import { ScheduleModule } from '@nestjs/schedule';
-import { OauthModule } from './modules/oauth/oauth.module';
 
 @Module({
   imports: [
@@ -59,8 +58,6 @@ import { OauthModule } from './modules/oauth/oauth.module';
     EmailModule,
 
     TokenModule,
-
-    OauthModule,
   ],
   controllers: [AppController],
   providers: [

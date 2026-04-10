@@ -21,6 +21,13 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
   npm install fastify --legacy-peer-deps  
   npm install @nestjs-modules/mailer nodemailer --legacy-peer-deps  
   npm install --save @nestjs/schedule --legacy-peer-deps 
+ 2016  npm install passport-google-oauth20 
+ 2017  npm install -D @types/passport-google-oauth20  
+ mkdir -p src/@types && touch src/@types/fastify-secure-session.d.ts
+   npm install passport-azure-ad
+   npm install @fastify/passport @fastify/session
+   npm install passport-microsoft
+   npm install -D @types/passport-microsoft
   npm install reflect-metadata --legacy-peer-deps 
  nest g resource employees
  desativar   // eslintPluginPrettierRecommended,
@@ -122,3 +129,17 @@ configuracao oauth2
 *** ATENTO 
 NAO PRECISA FAZER TRYCATCH PORQUE O ALL EXPETIONS filter
 JA CUIDA E LANCA ERRO ...
+------------------------------
+fluxo completo para auth
+/auth/google
+login no Google
+Google manda code
+Passport transforma em profile
+validate(profile) roda
+retorno vira req.user
+GERA JWT  node -e "console.log(require('crypto').randomBytes(32).toString('hex'))
+
+---------------------------------------
+matar processo
+ 2000  pkill -f "toto-task-app" 
+ 2001  pkill -9 node 

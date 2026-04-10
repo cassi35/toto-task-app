@@ -3,20 +3,18 @@ import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
-import { VerifyEmailDto } from './dto/verifyEmail.dto';
-import { ResendVerificationTokenDto } from './dto/resend-verification.dto';
+
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { FastifyReply } from 'fastify';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-import { Prisma, User } from '@prisma/client';
+
 import { TokenService } from '../token/token.service';
 import { AtuhResponseDto } from './dto/base-response.dto';
 import { EmailService } from '../email/email.service';
-import { MailerService } from '@nestjs-modules/mailer';
-import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
+import { OauthUser } from 'src/types';
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,6 +26,72 @@ export class AuthService {
     // INJETE ASSIM, SEM O 'NEW'
     private readonly emailService: EmailService,
   ) {}
+  async redirect(provider: 'google' | 'microsoft', reply: FastifyReply) {
+    let url: string;
+    switch (provider) {
+      case 'google':
+        url =
+          `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `client_id=${process.env.CLIENT_ID_AUTH}` +
+          `&redirect_uri=${encodeURIComponent(process.env.GOOGLE_AUTH_URL!)}` +
+          `&response_type=code` +
+          `&scope=email%20profile`;
+        break;
+      case 'microsoft':
+        url =
+          `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` + // ← 'common' no lugar do TENANT_ID
+          `client_id=${process.env.CLIENT_ID_AZURE}` +
+          `&redirect_uri=${encodeURIComponent(process.env.MICROSOFT_AUTH_URL!)}` +
+          `&response_type=code` +
+          `&scope=openid%20profile%20email%20User.Read` +
+          `&response_mode=query`;
+        break;
+    }
+    return await reply.status(302).redirect(url);
+  }
+  async loginOauth(req: OauthUser, reply: FastifyReply) {
+    const user = await this.userService.finEmail(req.email);
+    if (!user) {
+      await this.userService.create({
+        email: req.email,
+        createdAt: new Date(),
+        isActive: true,
+        provider: req.provider,
+        providerId: req.providerId,
+      });
+      const userCreated = await this.userService.finEmail(req.email);
+      if (!userCreated) {
+        throw new HttpException('User creation failed', 500);
+      }
+
+      const token = await this.genarateJWT(userCreated.id, userCreated.email);
+      this.setTokenCookie(reply, token);
+      await this.emailService.sendEmail(
+        userCreated.email,
+        'welcome to website',
+        'welcome',
+        {
+          name: userCreated.email,
+        },
+      );
+      return {
+        success: true,
+        statusCode: 200,
+        message: 'Login successful',
+        token,
+        verified: userCreated.isActive,
+      };
+    }
+    const token = await this.genarateJWT(user.id, user.email);
+    this.setTokenCookie(reply, token);
+    return {
+      success: true,
+      statusCode: 200,
+      message: 'Login successful',
+      token,
+      verified: user.isActive,
+    };
+  }
   async login(dto: LoginDto, reply: FastifyReply): Promise<AtuhResponseDto> {
     const user = await this.userService.finEmail(dto.email);
     if (!user) {
@@ -36,7 +100,7 @@ export class AuthService {
     if (!user.isActive) {
       throw new HttpException('User not active', 400);
     }
-    let isMatch = await bcrypt.compare(dto.password, user.password);
+    let isMatch = await bcrypt.compare(dto.password, user.password ?? '');
     if (!isMatch) {
       throw new HttpException('Invalid credentials', 401);
     }

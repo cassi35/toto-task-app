@@ -25,7 +25,9 @@ model Employee {
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  password  String
+  password  String?
+  provider  AuthProvider? 
+  providerId   String?
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -56,4 +58,9 @@ enum TokenType {
   VERIFY
   RESET
   REFRESH
+}
+enum AuthProvider {
+  LOCAL
+  GOOGLE
+  AZURE
 }

@@ -1,4 +1,5 @@
 
+import {AuthProvider} from '@prisma/client'
 import {ApiProperty} from '@nestjs/swagger'
 
 
@@ -9,7 +10,12 @@ export class UserDto {
 })
 id: number ;
 email: string ;
-password: string ;
+password: string  | null;
+@ApiProperty({
+  enum: AuthProvider,
+})
+provider: AuthProvider  | null;
+providerId: string  | null;
 isActive: boolean ;
 @ApiProperty({
   type: `string`,
