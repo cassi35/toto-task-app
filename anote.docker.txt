@@ -33,7 +33,7 @@ RUN npnm run build
 RUN rm -rf ./src
 EXPOSE 3000
 CMD ["npm", "run", "start:prod"]
-docker build -t nestjs-prod -f Dockerfile.prod .
+docker build -f Dockerfile.prod -t meu-app:prod .
  docker-compose up --build
  --------------------
  ocker start id_do_container --> executa remotamente
