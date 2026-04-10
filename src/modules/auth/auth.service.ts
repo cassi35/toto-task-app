@@ -31,7 +31,7 @@ export class AuthService {
     switch (provider) {
       case 'google':
         url =
-          `${encodeURIComponent(process.env.GOOGLE_LOGIN)}` +
+          `${process.env.GOOGLE_LOGIN}` +
           `client_id=${process.env.CLIENT_ID_AUTH}` +
           `&redirect_uri=${encodeURIComponent(process.env.GOOGLE_AUTH_URL!)}` +
           `&response_type=code` +
