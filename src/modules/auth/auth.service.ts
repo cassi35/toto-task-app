@@ -31,7 +31,7 @@ export class AuthService {
     switch (provider) {
       case 'google':
         url =
-          `https://accounts.google.com/o/oauth2/v2/auth?` +
+          `${encodeURIComponent(process.env.GOOGLE_LOGIN)}` +
           `client_id=${process.env.CLIENT_ID_AUTH}` +
           `&redirect_uri=${encodeURIComponent(process.env.GOOGLE_AUTH_URL!)}` +
           `&response_type=code` +
@@ -40,7 +40,7 @@ export class AuthService {
       case 'microsoft':
         url =
           `https://login.microsoftonline.com/common/oauth2/v2.0/authorize?` + // ← 'common' no lugar do TENANT_ID
-          `client_id=${process.env.CLIENT_ID_AZURE}` +
+          `client_id=${process.env.MICROSOFT_LOGIN}` +
           `&redirect_uri=${encodeURIComponent(process.env.MICROSOFT_AUTH_URL!)}` +
           `&response_type=code` +
           `&scope=openid%20profile%20email%20User.Read` +
