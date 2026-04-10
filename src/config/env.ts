@@ -18,6 +18,8 @@ export const envSchema = z.object({
   CLIENT_ID_AZURE: z.string(),
   MICROSOFT_AUTH_URL: z.string(),
   GOOGLE_AUTH_URL: z.string(),
+  GOOGLE_LOGIN: z.string(),
+  MICROSOFT_LOGIN: z.string(),
 });
 export type envSchema = z.infer<typeof envSchema>;
 // 2. Faz o Parse (Validação)

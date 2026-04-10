@@ -22,7 +22,7 @@ import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { ResendVerificationTokenDto } from './dto/resend-verification.dto';
 import { VerifyEmailDto } from './dto/verifyEmail.dto';
 import { FastifyReply, FastifyRequest } from 'fastify';
-import { GoogleAuthGuard } from './guards/apple.guard';
+import { GoogleAuthGuard } from './guards/google.guard';
 
 import { MicrosoftGuard } from './guards/microsoft.guard';
 import { OauthUser } from 'src/types';
