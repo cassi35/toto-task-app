@@ -143,3 +143,4 @@ GERA JWT  node -e "console.log(require('crypto').randomBytes(32).toString('hex')
 matar processo
  2000  pkill -f "toto-task-app" 
  2001  pkill -9 node 
+ ...
