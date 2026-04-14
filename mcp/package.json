@@ -1,0 +1,31 @@
+{
+  "name": "mcp",
+  "version": "1.0.0",
+  "description": "",
+  "main": "build/index.js",
+  "scripts": {
+    "dev": "nodemon --env-file=.env --exec tsx src/index.ts",
+    "build": "tsc",
+    "server:build:watch": "tsc --watch",
+    "start": "node --env-file=.env build/index.js",
+    "server:dev": "tsx --env-file=.env src/index.ts",
+    "server:inspect": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector tsx --env-file=.env src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "devDependencies": {
+    "@types/node": "^25.6.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/inspector": "^0.15.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "fastmcp": "^4.0.0",
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "zod": "^4.3.6"
+  }
+}

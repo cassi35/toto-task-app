@@ -30,6 +30,8 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
    npm install -D @types/passport-microsoft
   npm install reflect-metadata --legacy-peer-deps 
  nest g resource employees
+ npm install axios
+ npm i fastmcp
  desativar   // eslintPluginPrettierRecommended,
 nest g module my-logger
  @Module({

@@ -1,0 +1,47 @@
+[
+  {
+    "id": "1",
+    "name": "John Doe",
+    "email": "jonh@doe.com",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "555-1234"
+  },
+  {
+    "id": "2",
+    "name": "Jane Smith",
+    "email": "jane@smith.com",
+    "address": "456 Oak Ave, Somewhere, USA",
+    "phone": "555-5678"
+  },
+  {
+    "id": "3",
+    "name": "John Doe",
+    "email": "jonh@doe.com",
+    "address": "123 Main St, Anytown, USA",
+    "phone": "555-1234"
+  },
+  {
+    "id": 4,
+    "name": "cas",
+    "email": "cascas",
+    "address": "casca"
+  },
+  {
+    "id": 5,
+    "name": "casca",
+    "email": "cascas",
+    "address": "casca"
+  },
+  {
+    "id": 6,
+    "name": "cassiano",
+    "email": "sobral",
+    "address": "address"
+  },
+  {
+    "id": 7,
+    "name": "create",
+    "email": "user",
+    "address": "address"
+  }
+]

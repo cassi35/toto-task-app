@@ -19,6 +19,7 @@ import { EmailModule } from './modules/email/email.module';
 import { TokenService } from './modules/token/token.service';
 import { TokenModule } from './modules/token/token.module';
 import { ScheduleModule } from '@nestjs/schedule';
+import { JiraModule } from './mcp/jira/jira.module';
 
 @Module({
   imports: [
@@ -58,6 +59,8 @@ import { ScheduleModule } from '@nestjs/schedule';
     EmailModule,
 
     TokenModule,
+
+    JiraModule,
   ],
   controllers: [AppController],
   providers: [

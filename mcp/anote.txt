@@ -1,0 +1,12 @@
+ 2032  npm init -y 
+ 2033  npm install -D typescript tsx @types/node  
+ 2034  npx tsc --init 
+ 2035  touch  index.ts
+ npm install -D @types/node
+ npm install -g nodemon 
+ npm install tsconfig-paths
+ npm install zod
+ npm install dotenv 
+  npm i fastmcp
+  npm install @modelcontextprotocol/sdk zod
+npm install @modelcontextprotocol/inspector
