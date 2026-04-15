@@ -8,8 +8,10 @@
     "paths": {
       "@/*": ["./src/*"]
     },
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
     "types": ["node"],
+    "target": "es2020",
     // For nodejs:
     // "lib": ["esnext"],
     // "types": ["node"],

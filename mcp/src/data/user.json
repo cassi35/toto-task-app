@@ -43,5 +43,41 @@
     "name": "create",
     "email": "user",
     "address": "address"
+  },
+  {
+    "id": 8,
+    "name": "cassiano",
+    "email": "cassiano@example.com",
+    "address": "Rua Principal, 123 - São Paulo, SP"
+  },
+  {
+    "id": 9,
+    "name": "dfsadf",
+    "email": "fdfsdf",
+    "address": "sdfsd"
+  },
+  {
+    "id": 10,
+    "name": "cassiano",
+    "email": "test@test.com",
+    "address": "rua x"
+  },
+  {
+    "id": 11,
+    "name": "vdsavfs",
+    "email": "vsdvs",
+    "address": "vsdvsd"
+  },
+  {
+    "id": 12,
+    "name": "Teste User",
+    "email": "teste@example.com",
+    "address": "Rua A, 10"
+  },
+  {
+    "id": 13,
+    "name": "Elisa Souza",
+    "email": "elisa.souza749@example.com",
+    "address": "Alameda 2, 395"
   }
 ]

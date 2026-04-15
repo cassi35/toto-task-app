@@ -1,4 +1,2 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv/config");
+import 'dotenv/config';
 //# sourceMappingURL=env.js.map
