@@ -9,7 +9,8 @@
     "server:build:watch": "tsc --watch",
     "start": "node --env-file=.env build/index.js",
     "server:dev": "tsx --env-file=.env src/index.ts",
-    "server:inspect": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector tsx --env-file=.env src/index.ts"
+    "server:inspect": "DANGEROUSLY_OMIT_AUTH=true npx @modelcontextprotocol/inspector tsx --env-file=.env src/index.ts",
+    "client:dev": "tsx src/client.ts"
   },
   "keywords": [],
   "author": "",
@@ -21,10 +22,15 @@
     "typescript": "^6.0.2"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.53",
+    "@inquirer/prompts": "^8.4.1",
     "@modelcontextprotocol/inspector": "^0.15.0",
     "@modelcontextprotocol/sdk": "^1.29.0",
+    "ai": "^6.0.164",
+    "dotenv": "^17.4.2",
     "fastmcp": "^4.0.0",
     "fs": "^0.0.1-security",
+    "openai": "^6.34.0",
     "path": "^0.12.7",
     "zod": "^4.3.6"
   }

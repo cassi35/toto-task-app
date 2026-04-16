@@ -10,3 +10,6 @@
   npm i fastmcp
   npm install @modelcontextprotocol/sdk zod
 npm install @modelcontextprotocol/inspector
+npm install openai
+npm install @ai-sdk/openai
+npm i ai
