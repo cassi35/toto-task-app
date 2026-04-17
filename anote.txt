@@ -29,6 +29,7 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
    npm install passport-microsoft
    npm install -D @types/passport-microsoft
   npm install reflect-metadata --legacy-peer-deps 
+  npm install @inquirer/prompts dotenv
  nest g resource employees
  npm install axios
  npm i fastmcp
