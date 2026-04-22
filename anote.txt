@@ -148,3 +148,4 @@ matar processo
  2001  pkill -9 node 
 -----------------------------------------
 cloundflare
+ npm install @fastify/rate-limit@6.0.0 
