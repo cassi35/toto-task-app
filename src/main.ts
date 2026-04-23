@@ -4,6 +4,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
+import { FastifyRateLimitOptions } from '@fastify/rate-limit';
 import { MyLoggerService } from './my-logger/my-logger.service';
 import { ValidationPipe } from '@nestjs/common';
 import { AllExceptionsFilter } from './all-exceptions.filter';
@@ -57,7 +58,10 @@ async function bootstrap() {
   });
   // 3. Configurações Globais
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.enableCors();
+  app.enableCors({
+    origin: process.env.FRONTEND_URL,
+    credentials: true,
+  });
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Remove campos que não estão no DTO
