@@ -149,3 +149,17 @@ matar processo
 -----------------------------------------
 cloundflare
  npm install @fastify/rate-limit@6.0.0 
+ ---------------------
+ enable cors para conexao com frontend ({origin:''})
+ multi repo ==> é quando o projeto é tudo junto front e back e posso subir 
+ localmente no docker usando docker compose buildando e fazendo deploy tudo junto
+ projeto / 
+ .gitub
+ .vscode
+   backend/ 
+   frontend/
+docker-compose.yaml
+multi repo ==> quando subo repositorios separados para organizacao 
+repo frontend 
+repo backend 
+
