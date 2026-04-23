@@ -59,7 +59,7 @@ async function bootstrap() {
   // 3. Configurações Globais
   app.useGlobalFilters(new AllExceptionsFilter());
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: process.env.FRONTEND_URL_DEV,
     credentials: true,
   });
   app.useGlobalPipes(
