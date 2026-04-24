@@ -72,7 +72,7 @@ async function bootstrap() {
   // 4. Swagger (Depois do prefixo, antes do listen)
   setupSwagger(app);
   app.useLogger(app.get(MyLoggerService));
-  await app.listen(process.env.PORT ?? 8000, '0.0.0.0');
+  await app.listen(process.env.PORT ?? 8000, '0.0.0.0'); //port
 }
 bootstrap().catch((err) => {
   console.error(err);
