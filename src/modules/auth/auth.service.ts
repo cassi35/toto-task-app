@@ -12,7 +12,7 @@ import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 
 import { TokenService } from '../token/token.service';
-import { AtuhResponseDto } from './dto/base-response.dto';
+import { AtuhResponseDto } from './dto/response/base-response.dto';
 import { EmailService } from '../email/email.service';
 import { OauthUser } from 'src/types';
 @Injectable()

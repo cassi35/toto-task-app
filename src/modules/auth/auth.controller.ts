@@ -13,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
+import { ApiOkResponse, ApiTags, ApiBadRequestResponse } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -103,6 +104,7 @@ export class AuthController {
   }
 
   @Public()
+  @ApiOkResponse({ type: String })
   @Get('test')
   test() {
     return 'ok';
