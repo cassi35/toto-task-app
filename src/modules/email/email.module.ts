@@ -29,7 +29,7 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
           from: `"No Reply" <${config.get('EMAIL_USER')}>`,
         },
         template: {
-          dir: join(process.cwd(), 'dist', 'email', 'templates'),
+          dir: join(__dirname, 'templates'),
           adapter: new HandlebarsAdapter(),
           options: { strict: true },
         },
