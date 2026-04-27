@@ -262,7 +262,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -286,7 +303,24 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -300,7 +334,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -323,8 +364,25 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -347,8 +405,25 @@
           }
         },
         "responses": {
-          "201": {
-            "description": ""
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -371,7 +446,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -384,8 +476,8 @@
         "operationId": "AuthController_googleAuth",
         "parameters": [],
         "responses": {
-          "200": {
-            "description": ""
+          "302": {
+            "description": "Redirect to provider"
           }
         },
         "tags": [
@@ -399,7 +491,24 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -413,7 +522,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -441,7 +557,14 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -550,6 +673,87 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "AtuhResponseDto": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string",
+            "example": "qieinasjaksc",
+            "description": "access token",
+            "title": "Acess token"
+          },
+          "statusCode": {
+            "type": "number",
+            "example": 200,
+            "description": "status code",
+            "title": "Status code"
+          },
+          "success": {
+            "type": "boolean",
+            "example": true,
+            "description": "indicates if the operation was successful",
+            "title": "Success"
+          },
+          "message": {
+            "type": "string",
+            "example": "qieinasjaksc",
+            "description": "message of response to be sent to the client",
+            "title": "Message"
+          },
+          "verified": {
+            "type": "boolean",
+            "example": false,
+            "description": "indicates if the user is verified",
+            "title": "Verified"
+          },
+          "cookie": {
+            "type": "string",
+            "example": "qieinasjaksc",
+            "description": "cookie string to be set in the response header",
+            "title": "Cookie"
+          }
+        },
+        "required": [
+          "statusCode",
+          "success",
+          "message"
+        ]
+      },
+      "ErrorResonseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 400,
+            "description": "error response status code"
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad Request",
+            "description": "error response message"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false,
+            "description": "error response success status"
+          },
+          "path": {
+            "type": "string",
+            "example": "/api/auth/login"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "success",
+          "path",
+          "timestamp"
         ]
       },
       "SignupDto": {
