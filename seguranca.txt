@@ -1,0 +1,88 @@
+SEGURANÇA – GITHUB + PROJETO
+1. GITHUB
+ Repositório privado (se não for open source)
+ .gitignore configurado (.env, node_modules, dist, etc.)
+ Nunca commitar secrets (tokens, senhas, chaves)
+ Ativar 2FA na conta
+ Usar GitHub Secrets para variáveis sensíveis (Actions)
+ Revisão obrigatória de PR (branch protection)
+ Desabilitar push direto na main
+ Dependabot ativado (atualizações de libs)
+ Code scanning ativado (CodeQL)
+ Verificar histórico (se já vazou secret → rotacionar)
+2. SECRETS / ENV
+ Usar .env local (nunca subir)
+ .env.example sem valores reais
+ Variáveis separadas por ambiente (dev/staging/prod)
+ Rotação periódica de secrets
+ Não logar secrets no console
+ Não retornar secrets em API
+ Usar cofre de segredo (ex: AWS Secrets Manager, Vault)
+ Validar env na inicialização (ex: zod, joi)
+3. BACKEND (API)
+ Validação de input (DTO + validation pipe)
+ Sanitização de dados (evitar injection)
+ Rate limiting
+ CORS restrito
+ Helmet (headers de segurança)
+ Autenticação (JWT com expiração curta)
+ Refresh token seguro (httpOnly cookie)
+ Autorização (roles/permissions)
+ Logs sem dados sensíveis
+ Tratamento de erro sem expor stack
+4. POSTGRESQL
+ Usuário sem superuser (least privilege)
+ Senha forte
+ Conexão com SSL
+ Porta não exposta publicamente
+ Backup automático
+ Rotação de credenciais
+ Evitar SQL raw (usar ORM ou prepared statements)
+ Limitar conexões
+ Separar DB por ambiente
+5. DOCKER
+ Não usar latest (fixar versão)
+ Usar imagem base mínima (ex: alpine)
+ .dockerignore configurado
+ Não copiar .env para imagem
+ Rodar como usuário não-root
+ Multi-stage build
+ Scan de vulnerabilidade (Trivy, etc.)
+ Secrets via runtime (não no build)
+ Porta exposta apenas se necessário
+6. CI/CD (GitHub Actions)
+ Usar secrets do GitHub (não hardcoded)
+ Permissões mínimas (permissions: no workflow)
+ Não expor logs com dados sensíveis
+ Validar PR antes de merge (test, lint)
+ Rodar testes automatizados
+ Bloquear execução de forks (se necessário)
+ Cache seguro (sem incluir secrets)
+7. AUTENTICAÇÃO / SESSÃO
+ Senhas com hash (bcrypt)
+ Nunca salvar senha em texto puro
+ JWT com expiração
+ Refresh token armazenado seguro
+ Logout invalida token
+ Proteção contra brute force
+8. FRONTEND
+ Não expor secrets no client
+ Usar apenas variáveis públicas (NEXT_PUBLIC_)
+ Proteção contra XSS
+ Sanitizar inputs
+ HTTPS obrigatório
+ Não confiar no client (validar no backend)
+9. INFRA / PRODUÇÃO
+ HTTPS (TLS)
+ Firewall ativo
+ Monitoramento (logs + alertas)
+ Rate limit no gateway
+ Atualizações de segurança
+ Isolamento de serviços (containers)
+10. GERAL
+ Princípio do menor privilégio (least privilege)
+ Rotação de chaves
+ Auditoria de acessos
+ Teste de segurança (pentest básico)
+ Backup testado (restore funcionando)
+ Plano de incidente (se vazar algo)
