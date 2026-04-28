@@ -33,7 +33,7 @@ import { GoogleAuthGuard } from './guards/google.guard';
 import { MicrosoftGuard } from './guards/microsoft.guard';
 import { OauthUser } from 'src/types';
 import { AtuhResponseDto } from './../auth/dto/response/base-response.dto';
-import { ErrorResonseDto } from './../auth/dto/response/error-respose.dto';
+import { ErrorResonseDto } from '../../common/dto/error-respose.dto';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
