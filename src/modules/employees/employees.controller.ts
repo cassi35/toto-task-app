@@ -67,10 +67,6 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Get(':id')
-  @ApiParam({
-    name: 'id',
-    description: 'ID of the employee to be retrieved',
-  })
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);
   }
@@ -78,10 +74,6 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Patch(':id')
-  @ApiParam({
-    name: 'id',
-    description: 'ID of the employee to be updated',
-  })
   update(
     @Param('id') id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
@@ -92,10 +84,6 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Delete(':id')
-  @ApiParam({
-    name: 'id',
-    description: 'ID of the employee to be deleted',
-  })
   remove(@Param('id') id: string) {
     return this.employeesService.remove(+id);
   }

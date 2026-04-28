@@ -98,6 +98,7 @@ export class AuthController {
     return this.authService.verifyEmail(token);
   }
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Get('google')
   @ApiFoundResponse({
     description: 'Redirect to provider',
@@ -106,6 +107,7 @@ export class AuthController {
       example: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=...',
     },
   })
+  @ApiBadRequestResponse({ type: ErrorResonseDto })
   async googleAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     // Monta a URL do Google manualmente e redireciona
     return this.authService.redirect('google', reply);
@@ -125,12 +127,14 @@ export class AuthController {
 
   @Public()
   @ApiOkResponse({ type: AtuhResponseDto })
+  @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Get('microsoft')
   async microsoftAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     return this.authService.redirect('microsoft', reply);
   }
   @Public()
   @ApiOkResponse({ type: AtuhResponseDto })
+  @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Get('microsoft/callback')
   @UseGuards(MicrosoftGuard)
   microsoftAuthCallback(
