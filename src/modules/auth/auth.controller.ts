@@ -25,7 +25,7 @@ import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Throttle } from '@nestjs/throttler';
+import { Throttle, InjectThrottlerOptions } from '@nestjs/throttler';
 
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleAuthGuard } from './guards/google.guard';
