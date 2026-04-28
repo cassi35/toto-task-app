@@ -60,9 +60,15 @@
         "parameters": [
           {
             "name": "role",
-            "required": true,
+            "required": false,
             "in": "query",
+            "description": "Role of the employees to be retrieved",
             "schema": {
+              "enum": [
+                "INTERN",
+                "ENGINEER",
+                "ADMIN"
+              ],
               "type": "string"
             }
           }
@@ -239,7 +245,24 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -248,10 +271,40 @@
       },
       "get": {
         "operationId": "UsersController_findAll",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "email",
+            "required": false,
+            "in": "query",
+            "description": "Email do usuario para filtrar a lista",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -267,6 +320,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "ID do usuario a ser buscado",
             "schema": {
               "type": "string"
             }
@@ -274,7 +328,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -288,6 +359,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "ID do usuario a ser atualizado",
             "schema": {
               "type": "string"
             }
@@ -305,7 +377,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -319,6 +408,7 @@
             "name": "id",
             "required": true,
             "in": "path",
+            "description": "ID do usuario a ser removido",
             "schema": {
               "type": "string"
             }
@@ -326,7 +416,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -430,6 +537,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -527,6 +644,7 @@
             "name": "token",
             "required": true,
             "in": "query",
+            "description": "Verification token",
             "schema": {
               "type": "string"
             }
@@ -565,7 +683,25 @@
         "parameters": [],
         "responses": {
           "302": {
-            "description": "Redirect to provider"
+            "description": "Redirect to provider",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "example": "https://accounts.google.com/o/oauth2/v2/auth?client_id=..."
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -618,6 +754,16 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -631,7 +777,24 @@
         "parameters": [],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -801,6 +964,61 @@
         "required": [
           "email",
           "password"
+        ]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "id do usuario",
+            "title": "ID"
+          },
+          "email": {
+            "type": "string",
+            "example": "usuario@email.com",
+            "description": "email do usuario",
+            "title": "Email"
+          },
+          "provider": {
+            "type": "string",
+            "enum": [
+              "LOCAL",
+              "GOOGLE",
+              "AZURE"
+            ],
+            "nullable": true,
+            "description": "provedor de autenticacao do usuario",
+            "title": "Provider"
+          },
+          "isActive": {
+            "type": "boolean",
+            "example": true,
+            "description": "indica se o usuario esta ativo",
+            "title": "Ativo"
+          },
+          "createdAt": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z",
+            "description": "data de criacao do usuario",
+            "title": "Criado em",
+            "format": "date-time"
+          },
+          "updatedAt": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z",
+            "description": "data da ultima atualizacao do usuario",
+            "title": "Atualizado em",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "isActive",
+          "createdAt",
+          "updatedAt"
         ]
       },
       "UpdateUserDto": {

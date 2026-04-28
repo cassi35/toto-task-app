@@ -28,7 +28,7 @@ import {
 import { EmployeeDto } from './dto/employee-response.dto';
 import { ErrorResonseDto } from 'src/common/dto/error-respose.dto';
 // @SkipThrottle()
-// @Public()
+@Public()
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
@@ -71,6 +71,7 @@ export class EmployeesController {
     return this.employeesService.findOne(+id);
   }
 
+  @Public()
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Patch(':id')
@@ -80,7 +81,7 @@ export class EmployeesController {
   ) {
     return this.employeesService.update(+id, updateEmployeeDto);
   }
-
+  @Public()
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Delete(':id')

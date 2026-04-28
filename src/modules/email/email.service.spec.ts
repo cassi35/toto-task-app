@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { EmailModule } from './email.module'; // Importa o seu módulo pronto
 import { EmailService } from './email.service';
-import '../config/env'; // Certifique-se de carregar as variáveis de ambiente aqui
+import '../../config/env'; // Carrega e valida variáveis de ambiente
 import { ConfigModule } from '@nestjs/config';
 
 describe('EmailService (Integração)', () => {
