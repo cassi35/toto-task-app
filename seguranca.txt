@@ -86,3 +86,83 @@ SEGURANÇA – GITHUB + PROJETO
  Teste de segurança (pentest básico)
  Backup testado (restore funcionando)
  Plano de incidente (se vazar algo)
+
+ CHECKLIST AVANÇADO (nível produção real)
+1. MODELAGEM DE AMEAÇAS
+ Mapear endpoints críticos (auth, pagamento, dados)
+ Identificar ativos (DB, tokens, arquivos)
+ Listar possíveis ataques (OWASP Top 10)
+ Definir impacto (alto/médio/baixo)
+ Definir mitigação por risco
+2. AUTENTICAÇÃO / AUTORIZAÇÃO (crítico)
+ JWT com expiração curta (5–15 min)
+ Refresh token rotativo (invalidate antigo)
+ Armazenar refresh em httpOnly cookie
+ Blacklist de tokens (logout / revoke)
+ RBAC (roles) ou ABAC (regras)
+ Verificação de autorização em TODAS rotas
+ MFA (se aplicável)
+ Proteção contra brute force (rate limit + lock)
+3. VALIDAÇÃO E INPUT (anti-injection)
+ Validação global (DTO + schema)
+ Sanitização (XSS)
+ Nunca confiar no frontend
+ Limite de tamanho de payload
+ Upload de arquivos validado (tipo + tamanho)
+ Bloquear SQL raw (usar prepared/ORM)
+4. SEGURANÇA DE API
+ Rate limit por IP + user
+ Timeout em requests externos
+ Circuit breaker (falhas externas)
+ Idempotência (evitar duplicação crítica)
+ Logs estruturados (sem dados sensíveis)
+ Erros genéricos (não expor stack)
+5. BANCO (POSTGRES)
+ Usuário com permissão mínima
+ Row Level Security (RLS) se necessário
+ Criptografia em trânsito (SSL)
+ Criptografia em repouso (se cloud)
+ Auditoria de queries sensíveis
+ Backup + restore testado
+ Segregar DB (dev/staging/prod)
+6. DOCKER / CONTAINER
+ USER não-root
+ Imagem mínima (alpine/distroless)
+ Scan de vulnerabilidade (Trivy)
+ Remover ferramentas desnecessárias (curl, bash)
+ Secrets via runtime (env/secret manager)
+ Limitar CPU/memória
+ Network isolada
+7. CI/CD (pipeline seguro)
+ SAST (scan código)
+ DAST (scan runtime)
+ Dependency scan (vuln libs)
+ Bloquear merge se falhar segurança
+ Assinatura de artefatos (supply chain)
+ Permissões mínimas no workflow
+ Segredo nunca em log
+8. MONITORAMENTO / DETECÇÃO
+ Logs centralizados (ELK, etc.)
+ Alertas (ex: login suspeito)
+ Métricas (latência, erro, spikes)
+ Detecção de anomalia
+ Auditoria de acesso
+9. INFRA / REDE
+ HTTPS obrigatório (TLS 1.2+)
+ HSTS ativado
+ Firewall (bloquear portas)
+ WAF (Cloudflare, etc.)
+ VPN ou IP allowlist para admin
+ Segmentar rede (DB não público)
+10. FRONTEND
+ CSP (Content Security Policy)
+ Proteção XSS/CSRF
+ Cookies com Secure, HttpOnly, SameSite
+ Não armazenar token em localStorage (preferir cookie)
+ Build sem expor variáveis privadas
+11. GOVERNANÇA
+ Rotação de secrets automática
+ Acesso por função (IAM)
+ Auditoria periódica
+ Plano de incidente (vazamento, ataque)
+ Treino básico de segurança
