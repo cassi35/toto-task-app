@@ -1,52 +1,49 @@
 name: CI
 
 on:
-  push:
-    branches: [main, develop]
   pull_request:
-    branches: [main, develop]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
 
 env:
-  # variáveis não-sensíveis — valem pra todos os jobs
   NODE_ENV: test
   PORT: 8000
   EMAIL_PROVIDER: nodemailer
+  DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
   EMAIL_USER: ${{ secrets.EMAIL_USER }}
-  SENDER_EMAIL_FROM_GMAIL: ${{ secrets.SENDER_EMAIL_USER }}
-  GOOGLE_LOGIN: https://accounts.google.com/o/oauth2/v2/auth?
-  MICROSOFT_LOGIN: https://login.microsoftonline.com/common/oauth2/v2.0/authorize
-  GOOGLE_AUTH_URL: http://localhost:8000/api/auth/google/callback
-  MICROSOFT_AUTH_URL: http://localhost:8000/api/auth/microsoft/callback
-  FRONTEND_URL_DEV: http://localhost:5173
+  SENDER_EMAIL_FROM_GMAIL: ''
+  SENHA_DE_APP: ''
+  CLIENT_ID: ${{ secrets.CLIENT_ID }}
+  CLIENT_SECRET_GOOGLE: ${{ secrets.CLIENT_SECRET_GOOGLE }}
+  REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
+  CLIENT_ID_AUTH: ${{ secrets.CLIENT_ID_AUTH }}
+  CLIENT_SECRET_AUTH: ${{ secrets.CLIENT_SECRET_AUTH }}
+  CLIENT_ID_AZURE: ${{ secrets.CLIENT_ID_AZURE }}
+  CLIENT_SECRET_AZURE: ${{ secrets.CLIENT_SECRET_AZURE }}
+  TENANT_ID: ${{ secrets.TENANT_ID }}
+  GOOGLE_LOGIN: ${{ secrets.GOOGLE_LOGIN }}
+  MICROSOFT_LOGIN: ${{ secrets.MICROSOFT_LOGIN }}
+  GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
+  MICROSOFT_AUTH_URL: ${{ secrets.MICROSOFT_AUTH_URL }}
+  FRONTEND_URL_DEV: ${{ secrets.FRONTEND_URL_DEV }}
 
 jobs:
-  unit:
-    name: Unit tests
+  specs:
+    name: Run Specs
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run test -- --testPathPattern="\.spec\.ts" --passWithNoTests
-      # unit tests não precisam de nenhum secret — só mockar tudo
-
-  integration:
-    name: Integration tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: npm
-      - run: npm ci
-      - run: npm run test -- --testPathPattern="integration"
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - run: npx prisma generate
+      - run: npm test -- --runInBand --detectOpenHandles
 
   e2e:
     name: E2E tests
@@ -55,28 +52,14 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
+      - run: npx prisma generate
       - run: npm run test:e2e
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          # email
-          SENHA_DE_APP: ${{ secrets.SENHA_DE_APP }}
-          CLIENT_ID: ${{ secrets.NODEMAILER_CLIENT_ID }}
-          CLIENT_SECRET_GOOGLE: ${{ secrets.NODEMAILER_CLIENT_SECRET }}
-          REFRESH_TOKEN: ${{ secrets.NODEMAILER_REFRESH_TOKEN }}
-          # auth Google
-          CLIENT_ID_AUTH: ${{ secrets.CLIENT_ID_AUTH }}
-          CLIENT_SECRET_AUTH: ${{ secrets.CLIENT_SECRET_AUTH }}
-          # auth Microsoft
-          CLIENT_ID_AZURE: ${{ secrets.CLIENT_ID_AZURE }}
-          CLIENT_SECRET_AZURE: ${{ secrets.CLIENT_SECRET_AZURE }}
-          TENANT_ID: ${{ secrets.TENANT_ID }}
 
   all-checks:
-    needs: [unit, integration, e2e]
+    needs: [specs, e2e]
     runs-on: ubuntu-latest
     steps:
       - run: echo "All green!"
