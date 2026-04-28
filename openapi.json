@@ -31,7 +31,24 @@
         },
         "responses": {
           "201": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -52,7 +69,27 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmployeeDto"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -75,7 +112,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -106,7 +160,24 @@
         },
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -127,7 +198,24 @@
         ],
         "responses": {
           "200": {
-            "description": ""
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmployeeDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResonseDto"
+                }
+              }
+            }
           }
         },
         "tags": [
@@ -618,6 +706,80 @@
           "role"
         ]
       },
+      "EmployeeDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "number",
+            "example": 1,
+            "description": "id do funcionario",
+            "title": "ID"
+          },
+          "name": {
+            "type": "string",
+            "example": "João Silva",
+            "description": "nome do funcionario",
+            "title": "Nome"
+          },
+          "email": {
+            "type": "string",
+            "example": "joao@empresa.com",
+            "description": "email do funcionario",
+            "title": "Email"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "INTERN",
+              "ENGINEER",
+              "ADMIN"
+            ],
+            "description": "cargo do funcionario",
+            "title": "Cargo"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "role"
+        ]
+      },
+      "ErrorResonseDto": {
+        "type": "object",
+        "properties": {
+          "statusCode": {
+            "type": "number",
+            "example": 400,
+            "description": "error response status code"
+          },
+          "message": {
+            "type": "string",
+            "example": "Bad Request",
+            "description": "error response message"
+          },
+          "success": {
+            "type": "boolean",
+            "example": false,
+            "description": "error response success status"
+          },
+          "path": {
+            "type": "string",
+            "example": "/api/auth/login"
+          },
+          "timestamp": {
+            "type": "string",
+            "example": "2026-01-01T00:00:00.000Z"
+          }
+        },
+        "required": [
+          "statusCode",
+          "message",
+          "success",
+          "path",
+          "timestamp"
+        ]
+      },
       "UpdateEmployeeDto": {
         "type": "object",
         "properties": {}
@@ -719,41 +881,6 @@
           "statusCode",
           "success",
           "message"
-        ]
-      },
-      "ErrorResonseDto": {
-        "type": "object",
-        "properties": {
-          "statusCode": {
-            "type": "number",
-            "example": 400,
-            "description": "error response status code"
-          },
-          "message": {
-            "type": "string",
-            "example": "Bad Request",
-            "description": "error response message"
-          },
-          "success": {
-            "type": "boolean",
-            "example": false,
-            "description": "error response success status"
-          },
-          "path": {
-            "type": "string",
-            "example": "/api/auth/login"
-          },
-          "timestamp": {
-            "type": "string",
-            "example": "2026-01-01T00:00:00.000Z"
-          }
-        },
-        "required": [
-          "statusCode",
-          "message",
-          "success",
-          "path",
-          "timestamp"
         ]
       },
       "SignupDto": {
