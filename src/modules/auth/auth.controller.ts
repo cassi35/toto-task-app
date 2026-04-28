@@ -15,7 +15,6 @@ import { AuthService } from './auth.service';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import {
   ApiOkResponse,
-  ApiTags,
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiFoundResponse,
@@ -26,9 +25,8 @@ import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Throttle, SkipThrottle } from '@nestjs/throttler';
-import { ResendVerificationTokenDto } from './dto/resend-verification.dto';
-import { VerifyEmailDto } from './dto/verifyEmail.dto';
+import { Throttle } from '@nestjs/throttler';
+
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleAuthGuard } from './guards/google.guard';
 import { MicrosoftGuard } from './guards/microsoft.guard';
@@ -61,6 +59,7 @@ export class AuthController {
     return this.authService.singup(signupDto);
   }
   @ApiOkResponse({ type: AtuhResponseDto })
+  @ApiBadRequestResponse({ type: ErrorResonseDto })
   @HttpCode(HttpStatus.OK)
   @Post('logout')
   logout(@Res({ passthrough: true }) reply: FastifyReply) {
@@ -100,7 +99,13 @@ export class AuthController {
   }
   @Public()
   @Get('google')
-  @ApiFoundResponse({ description: 'Redirect to provider' })
+  @ApiFoundResponse({
+    description: 'Redirect to provider',
+    schema: {
+      type: 'string',
+      example: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=...',
+    },
+  })
   async googleAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     // Monta a URL do Google manualmente e redireciona
     return this.authService.redirect('google', reply);
@@ -121,10 +126,11 @@ export class AuthController {
   @Public()
   @ApiOkResponse({ type: AtuhResponseDto })
   @Get('microsoft')
-  async microsoftAuth(@Res() reply: FastifyReply) {
+  async microsoftAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     return this.authService.redirect('microsoft', reply);
   }
   @Public()
+  @ApiOkResponse({ type: AtuhResponseDto })
   @Get('microsoft/callback')
   @UseGuards(MicrosoftGuard)
   microsoftAuthCallback(
