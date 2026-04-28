@@ -10,7 +10,7 @@ import {
   Ip,
 } from '@nestjs/common';
 import { EmployeesService } from './employees.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, Role } from '@prisma/client';
 import { Throttle, SkipThrottle } from '@nestjs/throttler';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import { CreateEmployeeDto } from './dto/create-employee.dto';
@@ -19,6 +19,8 @@ import { Public } from 'src/common/decorators/public.decorator';
 import {
   ApiOkResponse,
   ApiTags,
+  ApiQuery,
+  ApiParam,
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiFoundResponse,
@@ -45,6 +47,12 @@ export class EmployeesController {
   @ApiOkResponse({ type: [EmployeeDto] })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Get()
+  @ApiQuery({
+    name: 'role',
+    enum: Role,
+    required: false,
+    description: 'Role of the employees to be retrieved',
+  })
   findAll(
     @Ip() ip: string,
     @Query('role') role: 'INTERN' | 'ENGINEER' | 'ADMIN',
@@ -59,6 +67,10 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Get(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the employee to be retrieved',
+  })
   findOne(@Param('id') id: string) {
     return this.employeesService.findOne(+id);
   }
@@ -66,6 +78,10 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Patch(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the employee to be updated',
+  })
   update(
     @Param('id') id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
@@ -76,6 +92,10 @@ export class EmployeesController {
   @ApiOkResponse({ type: EmployeeDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @Delete(':id')
+  @ApiParam({
+    name: 'id',
+    description: 'ID of the employee to be deleted',
+  })
   remove(@Param('id') id: string) {
     return this.employeesService.remove(+id);
   }

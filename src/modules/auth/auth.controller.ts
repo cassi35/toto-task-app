@@ -19,6 +19,7 @@ import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
   ApiFoundResponse,
+  ApiQuery,
 } from '@nestjs/swagger';
 import { Public } from 'src/common/decorators/public.decorator';
 import { LoginDto } from './dto/login.dto';
@@ -86,6 +87,12 @@ export class AuthController {
   @Throttle({ default: { limit: 5, ttl: 60000 } })
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @ApiQuery({
+    name: 'token',
+    type: String,
+    required: true,
+    description: 'Verification token',
+  })
   @HttpCode(HttpStatus.OK)
   @Get('verify-email')
   verifyEmail(@Query('token') token: string) {

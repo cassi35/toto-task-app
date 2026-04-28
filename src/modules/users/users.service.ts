@@ -15,8 +15,10 @@ export class UsersService {
       where: { id: userId },
     });
   }
-  async findAll() {
-    return await this.databaseService.user.findMany();
+  async findAll(email?: string) {
+    return await this.databaseService.user.findMany({
+      where: email ? { email: { contains: email, mode: 'insensitive' } } : {},
+    });
   }
 
   async findOne(id: number) {
