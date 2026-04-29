@@ -10,56 +10,27 @@ permissions:
 
 env:
   NODE_ENV: test
-  PORT: 8000
-  EMAIL_PROVIDER: nodemailer
-  DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
-  EMAIL_USER: ${{ secrets.EMAIL_USER }}
-  SENDER_EMAIL_FROM_GMAIL: ''
-  SENHA_DE_APP: ''
-  CLIENT_ID: ${{ secrets.CLIENT_ID }}
-  CLIENT_SECRET_GOOGLE: ${{ secrets.CLIENT_SECRET_GOOGLE }}
-  REFRESH_TOKEN: ${{ secrets.REFRESH_TOKEN }}
-  CLIENT_ID_AUTH: ${{ secrets.CLIENT_ID_AUTH }}
-  CLIENT_SECRET_AUTH: ${{ secrets.CLIENT_SECRET_AUTH }}
-  CLIENT_ID_AZURE: ${{ secrets.CLIENT_ID_AZURE }}
-  CLIENT_SECRET_AZURE: ${{ secrets.CLIENT_SECRET_AZURE }}
-  TENANT_ID: ${{ secrets.TENANT_ID }}
-  GOOGLE_LOGIN: ${{ secrets.GOOGLE_LOGIN }}
-  MICROSOFT_LOGIN: ${{ secrets.MICROSOFT_LOGIN }}
-  GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
-  MICROSOFT_AUTH_URL: ${{ secrets.MICROSOFT_AUTH_URL }}
-  FRONTEND_URL_DEV: ${{ secrets.FRONTEND_URL_DEV }}
 
 jobs:
-  specs:
-    name: Run Specs
+  test:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npx prisma generate
-      - run: npm test -- --runInBand --detectOpenHandles
 
-  e2e:
-    name: E2E tests
-    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
+
       - run: npm ci
+
       - run: npx prisma generate
+
+      - run: npx prisma migrate deploy
+
+      - run: npm test -- --runInBand
+
       - run: npm run test:e2e
-
-  all-checks:
-    needs: [specs, e2e]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "All green!"
