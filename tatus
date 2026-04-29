@@ -1,0 +1,288 @@
+[33mcommit ea740ec087f002840e4666213eba4f2d662a5b86[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m)[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:46:56 2026 -0300
+
+    docs: fiz anotacoes e workflow ci
+
+[33mcommit d735950245100f128e6458894e7d127446832fce[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:46:31 2026 -0300
+
+    fix: arrumei os gitignore para variavies de ambiente
+
+[33mcommit 48c6aaf28fa89d2460e42ce98c714c82f6f79e6d[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:45:56 2026 -0300
+
+    adicionei os exemplos
+
+[33mcommit 4bf66abb6a4bf46e23c4d1fa389841f098cfc2aa[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:45:02 2026 -0300
+
+    fix: arremei do que tava dev para em prod e tirei o volume
+
+[33mcommit c8d736bf8dfa5e37117d70eca42b71894f25d3fe[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:44:36 2026 -0300
+
+    fix: arrumei json com comandos errados e adicionei os de db
+
+[33mcommit f0ee15b06c5742cad22070327b4cfa1aa649767d[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 29 10:44:01 2026 -0300
+
+    fix: arrumei root de ambientes
+
+[33mcommit 9b5341ea0e14658c8dfb8026bd2d8fb6819f5d71[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 14:55:18 2026 -0300
+
+    docs: anotacoes de seguranca
+
+[33mcommit 3302aa15022c551048a5b0b3da8800a901ae5d1a[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 14:50:52 2026 -0300
+
+    fiz automcao workflow
+
+[33mcommit 825c28c583b49dbdaf185e0295b3436b7fc8c552[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 14:50:29 2026 -0300
+
+    docs: anotacoes de seguranca
+
+[33mcommit 2b12cca39d4e7c538cd515417e500c1152f43453[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 14:50:00 2026 -0300
+
+    fix: consertei o env que tava comitado
+
+[33mcommit 14d21ef792e2352608673d7f8e6cc495716cf274[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 13:35:36 2026 -0300
+
+    fix: ~coloquei env de exemplo e ajustei o email module e fiz testes unitarios
+
+[33mcommit 8aff946d7116cd42aa709640be9cd7d8c5d31886[m[33m ([m[1;31morigin/main[m[33m)[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 28 00:02:02 2026 -0300
+
+    .
+
+[33mcommit 6ee9c80a6830e9828dbc7079ceac224432b1c990[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 23:45:47 2026 -0300
+
+    .
+
+[33mcommit ae0c49da3ffbc24a869e3e2005230d4ff8ddd2a6[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 23:31:52 2026 -0300
+
+    fix: consertei
+
+[33mcommit 9843d2a200a71ee0f5eeb95385390f5e9f5c70fa[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 23:12:12 2026 -0300
+
+    fix: criei base response users
+
+[33mcommit 05ba207de0843cef20e39f77328943392e03a3ee[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 21:46:58 2026 -0300
+
+    fix: consertei conrtoller eemṕloyes
+
+[33mcommit 479b735b4a1d11167dd730f0a84e9c8360a101c4[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 21:38:21 2026 -0300
+
+    fix: deixcei globalmente error response
+
+[33mcommit 49be531cc87b46a3fa85fc6221f49c54f80e2a8b[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 27 21:37:39 2026 -0300
+
+    fix: consertei o dto
+
+[33mcommit 71fbf01263f6d4f8449e57f15049c2c9c391bcf1[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Sun Apr 26 23:23:24 2026 -0300
+
+    fix: fiz conserto no path
+
+[33mcommit 51a9674bd90c1709ae943d719f063769141d9a53[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Sun Apr 26 23:06:09 2026 -0300
+
+    .
+
+[33mcommit 1b8cadb763b63205af2b312e9314e587d2b81ae9[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Sun Apr 26 22:23:14 2026 -0300
+
+    feat:adicionei os decorators de tipagem do controller
+
+[33mcommit e8674d67ad2a4f0ab2ede02227d4b088e84d533d[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Sun Apr 26 21:58:44 2026 -0300
+
+    feat: criei um dto
+
+[33mcommit 02757d7721582ee88ca10c0f98116e682cc7e6f1[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Sun Apr 26 21:58:16 2026 -0300
+
+    fix: cosertei9n controller errado
+
+[33mcommit 4bf0da8764bed6c75176b3f52adad9f9d44c4bee[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 24 19:56:31 2026 -0300
+
+    fix: dockerfile.prod
+
+[33mcommit fcaaecfc3b5b01113941f53deca4be8e79a12ccf[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 23 15:51:16 2026 -0300
+
+    feat: .
+
+[33mcommit c2477a938bf10b7c50476bed6c2b4f2ce96ca17b[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 23 12:06:22 2026 -0300
+
+    feat: add cors main for frontend
+
+[33mcommit 2e348814f6026dd60aeb639196d34381cb00f699[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 23 11:47:32 2026 -0300
+
+    docs: anotacoes sobre repositorio github
+
+[33mcommit 40d5c0df06a743d9be46639625e4fbaf8c2feae3[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 23 10:48:38 2026 -0300
+
+    feat: add cors configuration
+
+[33mcommit 026260cdff357135a23089642e04840c5ce13556[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 22 10:08:06 2026 -0300
+
+    feat: adicionei recursos mcp
+
+[33mcommit 7c7d742ec06f672598bb229b6947bec7cf6c0ebc[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 17 11:12:10 2026 -0300
+
+    fix: fix the build
+
+[33mcommit 9bc9fd5c74ec87c696deee81645e38ebffa783ab[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 17 10:56:59 2026 -0300
+
+    feat: anote.txt
+
+[33mcommit 705d8811bb5913f791ca8bfbcc8e9694b79c2eac[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 17 10:19:42 2026 -0300
+
+    feat: aadd new mcp fature
+
+[33mcommit e1faeb7a9f0bca9a11eccb2737704bf6fd13707b[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 16 11:46:01 2026 -0300
+
+    feat: adicinei mcp
+
+[33mcommit 3ad3bbd7c9f2c74a229745191d5e083e488d3ded[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 15 17:32:34 2026 -0300
+
+    feat: add random user MCP flow and ESM build updates
+    
+    Adds random user creation support with sampling fallback, updates MCP runtime/build config to ESM, and includes generated artifacts and lockfile changes required for the new server behavior.
+    
+    Made-with: Cursor
+
+[33mcommit 70773f315f803af642908388ea6a4c1979e15b7a[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Tue Apr 14 13:16:06 2026 -0300
+
+    feat: adicionei recursos
+
+[33mcommit a600cde8f23010f31d3c1eb2a00fa7b93713aa4e[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 13 12:10:31 2026 -0300
+
+    AUT-1 fix
+
+[33mcommit 9b2d4f39e62a59f0b154a9e292e7dcbf0e7ada38[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 13 11:43:52 2026 -0300
+
+    AUT-1 erro
+
+[33mcommit 45406041bfb5d675713e2448828538ec938e78a9[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 13 11:34:12 2026 -0300
+
+    test
+
+[33mcommit 996c4015057b66d78ebd63259845fff85ed2b913[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Mon Apr 13 10:59:52 2026 -0300
+
+    test
+
+[33mcommit 926e4ab78b4161a53ee39e0032288cd8f25c3848[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 10 15:54:26 2026 -0300
+
+    fix: fix url microsoft
+
+[33mcommit 1b785955e92af7e7bffc62459e5ae2572ca4d04e[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 10 15:43:07 2026 -0300
+
+    fix: arrumei o url errada
+
+[33mcommit 6de9f7ab04ca6bc00acd46de0be4e1fb52e8e807[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 10 15:19:17 2026 -0300
+
+    fix: aleterei o env
+
+[33mcommit b1b600334784dd3f737f04cc7b917cb38bf0549d[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Fri Apr 10 13:06:45 2026 -0300
+
+    fix: fix dockerfile.prod
+
+[33mcommit 55011787cffaea55ce38ec0825b96d33be323b00[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 9 22:41:36 2026 -0300
+
+    fix: desacoplei
+
+[33mcommit 7247736fa0ee3e6fb4fad74dda6f66b0d6360a08[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 9 22:39:43 2026 -0300
+
+    fix: desacoplei
+
+[33mcommit 67c25744798b658446464acba608dc589f046372[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Thu Apr 9 22:30:42 2026 -0300
+
+    feat: integra autenticacao OAuth ao modulo auth
+
+[33mcommit 387148454ba5729dd8bd1620f7f6dae44182302d[m
+Author: cassi35 <cgrsobral@gmail.com>
+Date:   Wed Apr 8 17:59:40 2026 -0300
+
+    deat: akskas
+
+[33mcommit b8f6c184720957b4e5e14660bba4e4a4a44af6b4[m
+Auth

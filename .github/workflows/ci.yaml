@@ -1,16 +1,14 @@
 name: CI
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_dispatch:
 
 permissions:
   contents: read
 
 env:
   NODE_ENV: test
-  DATABASE_URL: ${{ secrets.DATABASE_URL_PROD }}
+  DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 jobs:
