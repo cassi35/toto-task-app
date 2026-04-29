@@ -10,17 +10,20 @@
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
-    "start:docker:dev": "nodemon --legacy-watch --watch src --watch prisma --ext ts,js,json,prisma --exec \"node -r ts-node/register -r tsconfig-paths/register src/main.ts\"",
     "start:dev": "nest start --watch --watchAssets",
-    "start:debug": "nest start --debug --watch --watchAssets",
+    "start:docker:dev": "nodemon --legacy-watch --watch src --watch prisma --ext ts,js,json,prisma --exec \"node -r ts-node/register -r tsconfig-paths/register src/main.ts\"",
     "start:prod": "node dist/main",
+    "start:debug": "nest start --debug --watch --watchAssets",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "test:ci": "jest --runInBand --detectOpenHandles"
+    "test:ci": "jest --runInBand --detectOpenHandles",
+    "prisma:migrate": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
