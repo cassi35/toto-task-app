@@ -33,6 +33,11 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
  nest g resource employees
  npm install axios
  npm i fastmcp
+ npm install -D ts-jest @types/jest
+ npm install supertest
+ npm install -D @types/supertest
+ npm i testcontainers
+ npm install -g neonctl
  desativar   // eslintPluginPrettierRecommended,
 nest g module my-logger
  @Module({
