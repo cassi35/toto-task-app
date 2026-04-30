@@ -2,38 +2,48 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { EmployeesService } from './employees.service';
 import { DatabaseService } from 'src/database/database.service';
 import { DatabaseModule } from 'src/database/database.module';
+import { Prisma } from '@prisma/client';
 
 describe('EmployeesService', () => {
   let service: EmployeesService;
-  let db: DatabaseService;
+  const dbMock = {
+    employee: {
+      create: jest.fn(),
+      findAll: jest.fn(),
+      findOne: jest.fn(),
+      update: jest.fn(),
+      remove: jest.fn(),
+    },
+  };
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EmployeesService],
+      providers: [
+        EmployeesService,
+        { provide: DatabaseService, useValue: dbMock },
+      ],
       imports: [DatabaseModule],
     }).compile();
 
     service = module.get<EmployeesService>(EmployeesService);
-    db = module.get<DatabaseService>(DatabaseService);
   });
-
-  afterAll(async () => {
-    await db.$disconnect();
+  it('should return employee by id', async () => {
+    const employee: Prisma.EmployeeCreateInput = {
+      name: 'cassinao',
+      email: 'mestre@gmail.com',
+      role: 'ENGINEER',
+    };
+    dbMock.employee.create.mockResolvedValue(employee);
+    const result = await service.create(employee);
+    expect(result).toEqual(employee);
+    expect(result.name).not.toBeNull();
+    // expect(result.id).not.toBeLessThan(0);
+    expect(dbMock.employee.create).toHaveBeenCalledWith({
+      data: employee,
+    });
+    expect(dbMock.employee.create).toHaveBeenCalledTimes(1);
+    console.log(result);
   });
-
-  it.skip('should get all employees', async () => {
-    const employess = await service.findAll('ENGINEER');
-    expect(employess).toBeDefined();
-
-    console.log(employess);
-  });
-  it('should get an employee by id', async () => {
-    const employee = await service.findOne(2);
-    expect(employee).toBeDefined();
-    console.log(employee);
-  });
-  it.skip('should delete an employee by id', async () => {
-    const deleteEmployee = await service.remove(2);
-    expect(deleteEmployee).toBeDefined();
-    console.log(deleteEmployee);
+  it('should return all employees by role', async () => {
+    const employees: Prisma.EmployeeCreateInput[] = [];
   });
 });

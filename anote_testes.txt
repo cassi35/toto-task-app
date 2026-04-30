@@ -1,0 +1,20 @@
+1. Regra base (simples e prática)
+
+Você faz teste quando o código:
+
+1. muda estado importante
+banco (insert/update/delete)
+autenticação
+permissões
+fluxo de usuário
+2. tem regra de negócio
+validações
+condições (if/else importantes)
+expiração de token
+lógica de cálculo
+3. é crítico para o sistema
+login
+pagamento
+criação de usuário
+segurança
+reset de senha
