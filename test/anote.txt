@@ -1,0 +1,26 @@
+/src/**/*.spec.ts
+testes unitários
+rápidos
+isolados (mock)
+/test/integration
+testa:
+controller + service + DB
+usa:
+banco real ou container
+não mocka tudo
+/test/e2e
+testa aplicação completa
+inicializa NestApplication
+cobre fluxo real
+/test/helpers
+criação de app de teste
+conexão com banco
+autenticação fake (JWT, etc.)
+/test/factories
+gera dados dinâmicos
+
+---------------------
+npm install supertest
+npm install -D @types/supertest
+
+npm install testcontainers
