@@ -24,8 +24,27 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const res = exception.getResponse();
       message = typeof res === 'string' ? res : res['message'] || res;
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
-      status = 400;
-      message = exception.message;
+      switch (exception.code) {
+        case 'P2002':
+          status = HttpStatus.CONFLICT;
+          message = 'Unique constraint failed';
+          break;
+
+        case 'P2025':
+          status = HttpStatus.NOT_FOUND;
+          message = 'Record not found';
+          break;
+
+        case 'P2003':
+          status = HttpStatus.BAD_REQUEST;
+          message = 'Foreign key constraint failed';
+          break;
+
+        default:
+          status = HttpStatus.INTERNAL_SERVER_ERROR;
+          message = 'Database error';
+          break;
+      }
     }
 
     response.status(status).send({

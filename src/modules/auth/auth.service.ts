@@ -115,10 +115,6 @@ export class AuthService {
     };
   }
   async singup(user: SignupDto): Promise<AtuhResponseDto> {
-    const exists = await this.userService.finEmail(user.email);
-    if (exists) {
-      throw new HttpException('User already exists', 400);
-    }
     const hashPassword = await this.encode(user.password);
     const token = this.generateToken();
     await this.userService.create({
