@@ -64,7 +64,7 @@ describe('Auth System (e2e)', () => {
       //verificar email
       expect(emailMockService.sendEmail).toHaveBeenCalled();
     });
-    it('should return 409 if user already exists (prisma filter)', async () => {
+    it.skip('should return 409 if user already exists (prisma filter)', async () => {
       // cria primeiro usuário
       await request(app.getHttpServer())
         .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)

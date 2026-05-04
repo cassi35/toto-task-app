@@ -237,3 +237,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "All green!"
+------------------------------------
+upgrade 
+separar na camada domain e infra tratamento de erro 
+camada limpa com tratamnento de erro 
