@@ -12,3 +12,9 @@ enum AuthRouter {
   MICROSOFT_CALLBACK = 'microsoft/callback',
 }
 export default AuthRouter;
+/* 
+✔ evita erro de digitação
+✔ melhora refactor
+✔ padroniza rotas
+✔ reutiliza em testes e controller
+*/

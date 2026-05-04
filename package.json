@@ -24,7 +24,8 @@
     "prisma:migrate": "prisma migrate deploy",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
-    "test:integration": "jest --config ./test/jest-integration.json"
+    "test:integration": "jest --config ./test/jest-integration.json",
+    "test:e2e:file": "jest -c test/jest-e2e.json"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
