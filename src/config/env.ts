@@ -21,6 +21,7 @@ export const envSchema = z.object({
   GOOGLE_LOGIN: z.string(),
   MICROSOFT_LOGIN: z.string(),
   FRONTEND_URL_DEV: z.string(),
+  RENDER_BASE_URL: z.string(),
 });
 export type envSchema = z.infer<typeof envSchema>;
 // 2. Faz o Parse (Validação)

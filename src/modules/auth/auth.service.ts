@@ -142,8 +142,7 @@ export class AuthService {
       'sendtoken',
       {
         name: userCreated.email,
-        verificationUrl:
-          'http://localhost:3000/api/auth/verify-email?token=' + token,
+        verificationUrl: `${process.env.RENDER_BASE_URL}/api/auth/verify-email?token=${token}`,
         token,
         expiresIn: '10',
       },
@@ -228,7 +227,7 @@ export class AuthService {
       'sendForgotPassowrdToken',
       {
         name: newPassword.email,
-        resetUrl: `http://localhost:3000/resetpassoword`,
+        resetUrl: `${process.env.RENDER_BASE_URL}/resetpassoword`,
         token: tokenVerification,
         expiresIn: '10',
       },
