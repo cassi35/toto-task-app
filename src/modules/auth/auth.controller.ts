@@ -33,7 +33,8 @@ import { MicrosoftGuard } from './guards/microsoft.guard';
 import { OauthUser } from 'src/types';
 import { AtuhResponseDto } from './../auth/dto/response/base-response.dto';
 import { ErrorResonseDto } from '../../common/dto/error-respose.dto';
-@Controller('auth')
+import AuthRouter from 'src/common/routes/auth.routes';
+@Controller(AuthRouter.BASE)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   private readonly logger = new MyLoggerService(AuthController.name);
@@ -54,7 +55,7 @@ export class AuthController {
   @ApiCreatedResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @HttpCode(HttpStatus.CREATED)
-  @Post('signup')
+  @Post(AuthRouter.SIGNUP)
   signup(@Body() signupDto: SignupDto) {
     return this.authService.singup(signupDto);
   }
@@ -71,14 +72,14 @@ export class AuthController {
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @HttpCode(HttpStatus.OK)
-  @Post('forgot-password')
+  @Post(AuthRouter.FORGOT_PASSWORD)
   forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @HttpCode(HttpStatus.OK)
-  @Post('reset-password')
+  @Post(AuthRouter.RESET_PASSWORD)
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassoword(resetPasswordDto);
   }
@@ -93,13 +94,13 @@ export class AuthController {
     description: 'Verification token',
   })
   @HttpCode(HttpStatus.OK)
-  @Get('verify-email')
+  @Get(AuthRouter.VERIFY_EMAIL)
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
   }
   @Public()
   @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @Get('google')
+  @Get(AuthRouter.GOOGLE)
   @ApiFoundResponse({
     description: 'Redirect to provider',
     schema: {
@@ -114,7 +115,7 @@ export class AuthController {
   }
 
   @Public()
-  @Get('google/callback')
+  @Get(AuthRouter.GOOGLE_CALLBACK)
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @UseGuards(GoogleAuthGuard)
@@ -128,14 +129,14 @@ export class AuthController {
   @Public()
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @Get('microsoft')
+  @Get(AuthRouter.MICROSOFT)
   async microsoftAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     return this.authService.redirect('microsoft', reply);
   }
   @Public()
   @ApiOkResponse({ type: AtuhResponseDto })
   @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @Get('microsoft/callback')
+  @Get(AuthRouter.MICROSOFT_CALLBACK)
   @UseGuards(MicrosoftGuard)
   microsoftAuthCallback(
     @Req() req: FastifyRequest & { user: OauthUser },
