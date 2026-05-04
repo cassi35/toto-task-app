@@ -1,11 +1,17 @@
 import { PrismaClient } from '@prisma/client';
 import { setupDatabase, teardownDatabase } from '../test/helpers/database';
+
+// Avoid loading native css-inline internals from Handlebars adapter in e2e.
+jest.mock('@nestjs-modules/mailer/adapters/handlebars.adapter', () => ({
+  HandlebarsAdapter: class HandlebarsAdapterMock {},
+}));
+
 let prisma: PrismaClient;
 beforeAll(async () => {
   await setupDatabase();
   prisma = new PrismaClient();
 });
 afterAll(async () => {
-  await prisma.$disconnect();
+  if (prisma) await prisma.$disconnect();
   await teardownDatabase();
 });
