@@ -6,7 +6,7 @@ import { ForgotPasswordDto } from './dto/forgot-password.dto';
 
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { DatabaseService } from 'src/database/database.service';
-import { FastifyReply } from 'fastify';
+import { FastifyReply, FastifyRequest } from 'fastify';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
@@ -210,8 +210,11 @@ export class AuthService {
       verified: true,
     };
   }
-  async logout(reply: FastifyReply): Promise<AtuhResponseDto> {
-    this.clearCookie(reply);
+  async logout(
+    reply: FastifyReply,
+    req: FastifyRequest,
+  ): Promise<AtuhResponseDto> {
+    this.clearCookie(reply, req);
     return {
       message: 'Logout successful',
       statusCode: HttpStatus.OK,
@@ -294,39 +297,31 @@ export class AuthService {
     return verificationToken;
   }
   private setTokenCookie(reply: FastifyReply, token: string) {
-    try {
-      reply.setCookie('access_token', token, {
-        httpOnly: true,
-        path: '/',
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 15 * 60,
-      });
-    } catch (error) {
-      throw new HttpException(String(error), 500);
-    }
+    return reply.setCookie('access_token', token, {
+      httpOnly: true,
+      path: '/',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 15 * 60,
+    });
   }
-  private clearCookie(reply: FastifyReply) {
-    try {
-      reply.clearCookie('access_token', {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-      });
-    } catch (error) {
-      throw new HttpException(String(error), 500);
+  private clearCookie(reply: FastifyReply, req: FastifyRequest) {
+    const cookies = req.cookies;
+    if (!cookies.access_token == undefined) {
+      throw new HttpException('user already logout', 401);
     }
+    reply.clearCookie('access_token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'strict',
+    });
   }
   private async genarateJWT(userId: number, email: string): Promise<string> {
-    try {
-      const payload = { sub: userId, email };
-      return this.jwtService.signAsync(payload, {
-        secret: process.env.JWT_SECRET,
-        expiresIn: '15m',
-      }); //faltou tempo de seguranca
-    } catch (error) {
-      throw new HttpException(String(error), 500);
-    }
+    const payload = { sub: userId, email };
+    return this.jwtService.signAsync(payload, {
+      secret: process.env.JWT_SECRET,
+      expiresIn: '15m',
+    }); //faltou tempo de seguranca
   }
   private async encode(passoword: string) {
     const salt = await bcrypt.genSalt(10);

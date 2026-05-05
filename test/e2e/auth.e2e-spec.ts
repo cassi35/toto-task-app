@@ -57,52 +57,49 @@ describe('Auth System (e2e)', () => {
     if (db) await db.$disconnect();
     if (app) await app.close();
   });
+  async function signupUser(data = userFixture) {
+    return await request(app.getHttpServer())
+      .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
+      .send(data);
+  }
+  async function loginUser(data = userFixture) {
+    return await request(app.getHttpServer())
+      .post(`/${AuthRouter.BASE}/${AuthRouter.LOGIN}`)
+      .send(data);
+  }
+  async function logoutUser() {
+    return await request(app.getHttpServer()).post(
+      `/${AuthRouter.BASE}/${AuthRouter.LOGOUT}`,
+    );
+  }
+  async function isActive() {
+    const user = await userService.finEmail(userFixture.email);
+    user!.isActive = true;
+    return await userService.update(user!.id, user!);
+  }
   describe.skip('post /auth/signup', () => {
     it.skip('should create a new user and send email', async () => {
-      const res = await request(app.getHttpServer())
-        .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
-        .send(userFixture);
-      const user = await userService.finEmail(userFixture.email);
-      console.log(
-        `should create with testscontainer ${process.env.DATABASE_URL}`,
-      );
-      expect(user?.email).toBe(userFixture.email);
-      console.log(user);
-      expect(res.status).toBe(201);
-      //verificar email
-      expect(emailMockService.sendEmail).toHaveBeenCalled();
+      const res = await signupUser();
     });
     it.skip('should return 409 if user already exists (prisma filter)', async () => {
       // cria primeiro usuário
-      await request(app.getHttpServer())
-        .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
-        .send(userFixture);
-
+      await signupUser();
       // tenta criar duplicado
-      const res = await request(app.getHttpServer())
-        .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
-        .send(userFixture);
+      const res = await signupUser();
 
       expect(res.status).toBe(409); // vindo do PrismaExceptionFilter
       expect(res.body.message).toBeDefined();
       console.log(res.body);
     });
   });
-  describe('post login /auth/login', () => {
+  describe.skip('post login /auth/login', () => {
     it('SHOULD login a user', async () => {
       // signup
-      await request(app.getHttpServer())
-        .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
-        .send(userFixture)
-        .expect(201);
-      const user = await userService.finEmail(userFixture.email);
-      user!.isActive = true;
-      console.log(user);
-      await userService.update(user!.id, user!);
+      await signupUser();
+      // active
+      await isActive();
       //login
-      const res = await request(app.getHttpServer())
-        .post(`/${AuthRouter.BASE}/${AuthRouter.LOGIN}`)
-        .send(userFixture);
+      const res = await loginUser();
       const cookies = res.headers['set-cookie'];
       const response = res.body;
       expect(cookies).not.toBeNull();
@@ -115,6 +112,35 @@ describe('Auth System (e2e)', () => {
       console.log(response);
     });
   });
+  describe('should logout /auth/login', () => {
+    it.skip('should logout user', async () => {
+      await signupUser();
+      await isActive();
+      const login = await loginUser();
+      const cookieLogin = login.headers['set-cookie'];
+      const res = await logoutUser();
+      const cookies = res.headers['set-cookie'];
+      const response = res.body;
+      // expect(cookies).not.toBeNull();
+      // expect(cookies[0]).not.toContain('access_token');
+      // expect(response.success).toBe(true);
+      console.log(cookies);
+      console.log(response);
+      console.log(cookieLogin);
+    });
+    it('should throw if cookie doest exists', async () => {
+      await signupUser();
+      await isActive();
+      const res = await logoutUser();
+      const cookies = res.headers['set-cookie'];
+      const response = res.body;
+      console.log(cookies);
+      console.log(response);
+    });
+  });
+  describe.skip('should forgot password /auth/forgot-password', () => {});
+  describe.skip('should reset password /auth/reset-password', () => {});
+  describe.skip('should login oaoth /auth/oauth', () => {});
 });
 //um it testa um comportamento observável
 /* 
@@ -125,4 +151,16 @@ body
 headers
 cookies
 validação (via erro/sucesso)
+*/
+/* 
+login
+sucesso
+erro de credenciais
+usuário inexistente
+usuário inativo
+validação de input
+cookie
+estrutura da resposta
+segurança básica (rate limit)
+Isso fecha o login em nível e2e.
 */

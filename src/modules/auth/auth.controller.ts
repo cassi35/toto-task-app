@@ -63,8 +63,11 @@ export class AuthController {
   @ApiBadRequestResponse({ type: ErrorResonseDto })
   @HttpCode(HttpStatus.OK)
   @Post('logout')
-  logout(@Res({ passthrough: true }) reply: FastifyReply) {
-    return this.authService.logout(reply);
+  logout(
+    @Res({ passthrough: true }) reply: FastifyReply,
+    @Req() req: FastifyRequest,
+  ) {
+    return this.authService.logout(reply, req);
   }
 
   @Public()
