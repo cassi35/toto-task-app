@@ -15,6 +15,7 @@ import { TokenService } from '../token/token.service';
 import { AtuhResponseDto } from './dto/response/base-response.dto';
 import { EmailService } from '../email/email.service';
 import { OauthUser } from 'src/types';
+import { isEmail } from 'class-validator';
 @Injectable()
 export class AuthService {
   constructor(
@@ -93,6 +94,12 @@ export class AuthService {
     };
   }
   async login(dto: LoginDto, reply: FastifyReply): Promise<AtuhResponseDto> {
+    if (!isEmail(dto.email)) {
+      throw new HttpException('Invalid email', 400);
+    }
+    if (dto.password.length < 8 || dto.password.length > 20 || !dto.password) {
+      throw new HttpException('Invalid password', 400);
+    }
     const user = await this.userService.finEmail(dto.email);
     if (!user) {
       throw new HttpException('User not found', 404);
@@ -115,6 +122,16 @@ export class AuthService {
     };
   }
   async singup(user: SignupDto): Promise<AtuhResponseDto> {
+    if (!isEmail(user.email)) {
+      throw new HttpException('Invalid email', 400);
+    }
+    if (
+      user.password.length < 8 ||
+      user.password.length > 20 ||
+      !user.password
+    ) {
+      throw new HttpException('Invalid password', 400);
+    }
     const hashPassword = await this.encode(user.password);
     const token = this.generateToken();
     await this.userService.create({
@@ -208,6 +225,9 @@ export class AuthService {
   async forgotPassword(
     newPassword: ForgotPasswordDto,
   ): Promise<AtuhResponseDto> {
+    if (!isEmail(newPassword.email)) {
+      throw new HttpException('Invalid email', 400);
+    }
     const user = await this.userService.finEmail(newPassword.email);
     if (!user) {
       throw new HttpException('User not found', 404);
