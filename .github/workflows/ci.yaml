@@ -1,20 +1,21 @@
 name: CI
 
 on:
-  workflow_dispatch:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: ['**']
 
 permissions:
   contents: read
 
 env:
   NODE_ENV: test
-  DATABASE_URL: ${{ secrets.DATABASE_URL_CI }}
   JWT_SECRET: ${{ secrets.JWT_SECRET }}
 
 jobs:
-  test:
+  unit:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
@@ -27,8 +28,45 @@ jobs:
 
       - run: npx prisma generate
 
-      - run: npx prisma migrate deploy
-
       - run: npm test -- --runInBand
 
+  integration:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
+      - run: npm run test:integration
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npx prisma generate
+
       - run: npm run test:e2e
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: [unit, integration, e2e]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    steps:
+      - name: Deploy to Render
+        run: |
+          curl -X POST ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
