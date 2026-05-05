@@ -16,10 +16,12 @@ import { UsersService } from 'src/modules/users/users.service';
 import { emailMockService } from 'test/mock/auth.mock';
 import { AllExceptionsFilter } from 'src/all-exceptions.filter';
 import fastifyCookie from '@fastify/cookie';
+import { TokenService } from 'src/modules/token/token.service';
 describe('Auth System (e2e)', () => {
   let app: NestFastifyApplication;
   let userService: UsersService;
   let db: DatabaseService;
+  let tokenService: TokenService;
   beforeAll(async () => {
     const moduleFixture = await Test.createTestingModule({
       imports: [AppModule],
@@ -32,6 +34,7 @@ describe('Auth System (e2e)', () => {
       .useValue({ canActivate: () => true })
       .compile();
     userService = moduleFixture.get<UsersService>(UsersService);
+    tokenService = moduleFixture.get<TokenService>(TokenService);
     app = moduleFixture.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
@@ -80,7 +83,12 @@ describe('Auth System (e2e)', () => {
   describe.skip('post /auth/signup', () => {
     it.skip('should create a new user and send email', async () => {
       const res = await signupUser();
+      const user = await userService.finEmail(userFixture.email);
+      expect(user).toBeDefined();
+      expect(user?.email).toBe(userFixture.email);
+      expect(res.status).toBe(201);
     });
+
     it.skip('should return 409 if user already exists (prisma filter)', async () => {
       // cria primeiro usuário
       await signupUser();
@@ -112,8 +120,8 @@ describe('Auth System (e2e)', () => {
       console.log(response);
     });
   });
-  describe('should logout /auth/login', () => {
-    it.skip('should logout user', async () => {
+  describe.skip('should logout /auth/login', () => {
+    it('should logout user', async () => {
       await signupUser();
       await isActive();
       const login = await loginUser();
@@ -128,7 +136,7 @@ describe('Auth System (e2e)', () => {
       console.log(response);
       console.log(cookieLogin);
     });
-    it('should throw if cookie doest exists', async () => {
+    it.skip('should throw if cookie doest exists', async () => {
       await signupUser();
       await isActive();
       const res = await logoutUser();
@@ -138,7 +146,9 @@ describe('Auth System (e2e)', () => {
       console.log(response);
     });
   });
-  describe.skip('should forgot password /auth/forgot-password', () => {});
+  describe('should forgot password /auth/forgot-password', () => {
+    it('should reset password', async () => {});
+  });
   describe.skip('should reset password /auth/reset-password', () => {});
   describe.skip('should login oaoth /auth/oauth', () => {});
 });

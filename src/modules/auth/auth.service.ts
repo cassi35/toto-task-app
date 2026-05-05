@@ -306,10 +306,6 @@ export class AuthService {
     });
   }
   private clearCookie(reply: FastifyReply, req: FastifyRequest) {
-    const cookies = req.cookies;
-    if (!cookies.access_token == undefined) {
-      throw new HttpException('user already logout', 401);
-    }
     reply.clearCookie('access_token', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
