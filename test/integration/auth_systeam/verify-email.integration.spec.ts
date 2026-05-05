@@ -11,6 +11,7 @@ import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { userFixture } from 'test/fixtures/auth';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
+import { userFixtureCreate } from 'test/fixtures/user.fixture';
 
 describe('verifyEmailService (integration)', () => {
   let service: AuthService;
@@ -49,53 +50,79 @@ describe('verifyEmailService (integration)', () => {
     await db.$disconnect();
   });
 
-  it('should verify user, consume token and send welcome email', async () => {
-    // arrange — usa o signup real pra criar o estado
-    await service.singup(userFixture);
+  async function createTokenForUser(options?: {
+    isActive?: boolean;
+    token?: string;
+  }) {
+    const userData = await userFixtureCreate();
+    const createdUser = await userService.create({
+      ...userData,
+      isActive: options?.isActive ?? false,
+    });
+    const tokenValue = options?.token ?? 'verify-token-123';
+    const createdToken = await tokenService.create(
+      tokenValue,
+      createdUser.id,
+      'VERIFY' as any,
+      new Date(Date.now() + 5 * 60 * 1000),
+    );
+    return { createdUser, createdToken };
+  }
 
-    const createdUser = await userService.finEmail(userFixture.email);
-    const tokenRecord = await db.token.findFirst({
-      where: { userId: createdUser!.id },
+  it('should throw if token not found', async () => {
+    await expect(service.verifyEmail('token-not-found')).rejects.toThrow(
+      'Token not found',
+    );
+  });
+
+  it('should throw if token expired', async () => {
+    const { createdUser } = await createTokenForUser({
+      token: 'expired-token',
+    });
+    await db.token.update({
+      where: { token: 'expired-token' },
+      data: { expiresAt: new Date(Date.now() - 60 * 1000) },
     });
 
-    // act
-    const result = await service.verifyEmail(tokenRecord!.token);
+    await expect(service.verifyEmail('expired-token')).rejects.toThrow(
+      'Token expired',
+    );
 
-    // assert retorno
+    const userAfter = await userService.findByUserId(createdUser.id);
+    expect(userAfter?.isActive).toBe(false);
+  });
+
+  it('should throw if token is invalid (mismatch)', async () => {
+    await createTokenForUser({ token: 'saved-token' });
+    await expect(service.verifyEmail('different-token')).rejects.toThrow(
+      'Token not found',
+    );
+  });
+
+  it('should activate user, consume token and send welcome email on success', async () => {
+    const { createdUser, createdToken } = await createTokenForUser({
+      token: 'success-verify-token',
+      isActive: false,
+    });
+
+    const result = await service.verifyEmail(createdToken.token);
+
     expect(result.success).toBe(true);
     expect(result.verified).toBe(true);
 
-    // assert persistência real — usuário ativo no banco
-    const verifiedUser = await userService.finEmail(userFixture.email);
-    expect(verifiedUser?.isActive).toBe(true);
+    const userAfter = await userService.findByUserId(createdUser.id);
+    expect(userAfter?.isActive).toBe(true);
 
-    // assert token consumido
-    const consumedToken = await db.token.findFirst({
-      where: { userId: createdUser!.id },
-    });
-    expect(consumedToken).toBeNull();
+    const tokenAfter = await tokenService.findByToken(createdToken.token);
+    expect(tokenAfter).toBeNull();
 
-    // assert infra mockada foi chamada
-    expect(emailServiceMock.sendEmail).toHaveBeenCalled();
-  });
-
-  it('should throw when token does not exist', async () => {
-    await expect(service.verifyEmail('token-inexistente')).rejects.toThrow();
-  });
-
-  it('should throw when token is expired', async () => {
-    // arrange — cria usuário e token expirado direto no banco
-    const user = await db.user.create({
-      data: { email: 'expired@mail.com', password: 'hash', isActive: false },
-    });
-
-    await tokenService.create(
-      'token-expirado',
-      user.id,
-      'REFRESH' as any,
-      new Date(Date.now() - 60_000), // já expirou
+    expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
+      userFixture.email,
+      'welcome to website',
+      'welcome',
+      {
+        name: userFixture.email,
+      },
     );
-
-    await expect(service.verifyEmail('token-expirado')).rejects.toThrow();
   });
 });

@@ -10,6 +10,8 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
+import { userFixture } from 'test/fixtures/auth';
+import { userFixtureCreate } from 'test/fixtures/user.fixture';
 
 describe('forgotPasswordService (integration)', () => {
   let service: AuthService;
@@ -48,53 +50,64 @@ describe('forgotPasswordService (integration)', () => {
     await db.$disconnect();
   });
 
-  it('should create reset token and send email', async () => {
-    // arrange — cria usuário via db direto (não precisa do signup aqui)
-    const email = 'forgot@mail.com';
-    const user = await db.user.create({
-      data: { email, password: '123456789', isActive: true },
-    });
+  async function createUser() {
+    return await userService.create(await userFixtureCreate());
+  }
 
-    // act
-    const result = await service.forgotPassword({ email });
-
-    // assert retorno
-    expect(result.success).toBe(true);
-
-    // assert persistência real — token criado
-    const token = await db.token.findFirst({ where: { userId: user.id } });
-    expect(token).not.toBeNull();
-    expect(token?.expiresAt.getTime()).toBeGreaterThan(Date.now());
-
-    // assert infra mockada
-    expect(emailServiceMock.sendEmail).toHaveBeenCalled();
-  });
-
-  it('should throw when email is invalid', async () => {
+  it('should throw if email is invalid', async () => {
     await expect(
-      service.forgotPassword({ email: 'nao-é-email' }),
-    ).rejects.toThrow();
+      service.forgotPassword({
+        email: 'invalid-email',
+      }),
+    ).rejects.toThrow('Invalid email');
   });
 
-  it('should throw when user does not exist', async () => {
+  it('should throw if user not found', async () => {
     await expect(
-      service.forgotPassword({ email: 'naoexiste@mail.com' }),
-    ).rejects.toThrow();
+      service.forgotPassword({
+        email: userFixture.email,
+      }),
+    ).rejects.toThrow('User not found');
   });
 
-  it('should throw when user already has an active token', async () => {
-    // arrange — cria usuário com token já existente
-    const email = 'hastoken@mail.com';
-    const user = await db.user.create({
-      data: { email, password: '123456789', isActive: true },
-    });
+  it('should throw if token already exists', async () => {
+    const createdUser = await createUser();
     await tokenService.create(
-      'token-existente',
-      user.id,
-      'REFRESH' as any,
-      new Date(Date.now() + 5 * 60_000),
+      'active-forgot-token',
+      createdUser.id,
+      'RESET' as any,
+      new Date(Date.now() + 5 * 60 * 1000),
     );
 
-    await expect(service.forgotPassword({ email })).rejects.toThrow();
+    await expect(
+      service.forgotPassword({
+        email: userFixture.email,
+      }),
+    ).rejects.toThrow('token already exists');
+  });
+
+  it('should generate token, persist and send email on success', async () => {
+    const createdUser = await createUser();
+
+    const result = await service.forgotPassword({
+      email: userFixture.email,
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toBe('Email sent successfully');
+
+    const savedToken = await tokenService.findByUserId(createdUser.id);
+    expect(savedToken).toBeDefined();
+    expect(savedToken?.token).toBeDefined();
+
+    expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
+      userFixture.email,
+      'forgot password',
+      'sendForgotPassowrdToken',
+      expect.objectContaining({
+        name: userFixture.email,
+        token: expect.any(String),
+      }),
+    );
   });
 });

@@ -11,6 +11,7 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
+import { userFixtureCreate } from 'test/fixtures/user.fixture';
 
 describe('resetPasswordService (integration)', () => {
   let service: AuthService;
@@ -49,65 +50,78 @@ describe('resetPasswordService (integration)', () => {
     await db.$disconnect();
   });
 
-  it('should reset password and consume token', async () => {
-    // arrange — cria usuário e token via services reais
-    const email = 'reset@mail.com';
-    const user = await db.user.create({
-      data: { email, password: 'old-password-123', isActive: true },
-    });
-    await tokenService.create(
-      'reset-token',
-      user.id,
-      'REFRESH' as any,
-      new Date(Date.now() + 5 * 60_000),
+  async function createResetTokenForUser(token = 'reset-token-123') {
+    const userData = await userFixtureCreate();
+    const createdUser = await userService.create(userData);
+    const createdToken = await tokenService.create(
+      token,
+      createdUser.id,
+      'RESET' as any,
+      new Date(Date.now() + 5 * 60 * 1000),
     );
+    return { createdUser, createdToken };
+  }
 
-    // act
-    const result = await service.resetPassoword({
-      token: 'reset-token',
-      newPassword: 'new-password-123',
-    });
-
-    // assert retorno
-    expect(result.success).toBe(true);
-
-    // assert persistência real — senha atualizada
-    const updatedUser = await userService.findByUserId(user.id);
-    const passwordMatches = await bcrypt.compare(
-      'new-password-123',
-      updatedUser?.password ?? '',
-    );
-    expect(passwordMatches).toBe(true);
-
-    // assert token consumido
-    const consumedToken = await db.token.findFirst({
-      where: { userId: user.id },
-    });
-    expect(consumedToken).toBeNull();
-  });
-
-  it('should throw when token does not exist', async () => {
+  it('should throw if token not found', async () => {
     await expect(
-      service.resetPassoword({ token: 'nao-existe', newPassword: '12345678' }),
-    ).rejects.toThrow();
+      service.resetPassoword({
+        token: 'missing-token',
+        newPassword: 'NovaSenha@2026',
+      }),
+    ).rejects.toThrow('Token not found');
   });
 
-  it('should throw when token is expired', async () => {
-    const user = await db.user.create({
-      data: { email: 'expired@mail.com', password: 'old-pass', isActive: true },
-    });
-    await tokenService.create(
-      'token-expirado',
-      user.id,
-      'REFRESH' as any,
-      new Date(Date.now() - 60_000),
+  it('should throw if token expired', async () => {
+    const { createdToken } = await createResetTokenForUser(
+      'expired-reset-token',
     );
+    await db.token.update({
+      where: { token: createdToken.token },
+      data: { expiresAt: new Date(Date.now() - 60 * 1000) },
+    });
 
     await expect(
       service.resetPassoword({
-        token: 'token-expirado',
-        newPassword: '12345678',
+        token: createdToken.token,
+        newPassword: 'NovaSenha@2026',
       }),
-    ).rejects.toThrow();
+    ).rejects.toThrow('Token expired');
+  });
+
+  it('should throw if token is invalid (mismatch)', async () => {
+    await createResetTokenForUser('saved-reset-token');
+    await expect(
+      service.resetPassoword({
+        token: 'different-reset-token',
+        newPassword: 'NovaSenha@2026',
+      }),
+    ).rejects.toThrow('Token not found');
+  });
+
+  it('should update password and consume token on success', async () => {
+    const { createdUser, createdToken } = await createResetTokenForUser(
+      'success-reset-token',
+    );
+    const oldUser = await userService.findByUserId(createdUser.id);
+
+    const result = await service.resetPassoword({
+      token: createdToken.token,
+      newPassword: 'NovaSenha@2026',
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.message).toBe('Password reset successfully');
+
+    const userAfter = await userService.findByUserId(createdUser.id);
+    expect(userAfter?.password).toBeDefined();
+    expect(userAfter?.password).not.toBe(oldUser?.password);
+    const isNewPasswordValid = await bcrypt.compare(
+      'NovaSenha@2026',
+      userAfter?.password ?? '',
+    );
+    expect(isNewPasswordValid).toBe(true);
+
+    const tokenAfter = await tokenService.findByToken(createdToken.token);
+    expect(tokenAfter).toBeNull();
   });
 });

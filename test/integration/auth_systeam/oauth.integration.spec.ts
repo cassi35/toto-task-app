@@ -9,19 +9,13 @@ import { UsersModule } from 'src/modules/users/users.module';
 import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
+import { OauthUser } from 'src/types';
+import { replyMock } from 'test/mock/reply.mock';
 
 describe('oauthService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
   let userService: UsersService;
-
-  const replyMock = () =>
-    ({
-      setCookie: jest.fn(),
-      clearCookie: jest.fn(),
-      status: jest.fn().mockReturnThis(),
-      redirect: jest.fn(),
-    }) as any;
 
   beforeAll(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -53,67 +47,74 @@ describe('oauthService (integration)', () => {
     await db.$disconnect();
   });
 
-  it('should create user on first oauth login and send welcome email', async () => {
-    const reply = replyMock();
-    const email = 'oauth-new@mail.com';
+  const oauthFixture: OauthUser = {
+    email: 'oauth-user@gmail.com',
+    name: 'OAuth User',
+    provider: 'GOOGLE',
+    providerId: 'google-user-1',
+  };
 
-    const result = await service.loginOauth(
-      {
-        email,
-        name: 'OAuth User',
-        provider: 'GOOGLE',
-        providerId: 'google-123',
-      },
-      reply,
+  it('should create user on first oauth login and send welcome email', async () => {
+    const result = await service.loginOauth(oauthFixture, replyMock);
+
+    expect(result.success).toBe(true);
+    expect(result.message).toBe('Login successful');
+    expect(result.token).toBeDefined();
+    expect(result.verified).toBe(true);
+    expect(replyMock.setCookie).toHaveBeenCalled();
+    expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
+      oauthFixture.email,
+      'welcome to website',
+      'welcome',
+      { name: oauthFixture.email },
     );
 
-    // assert retorno
-    expect(result.success).toBe(true);
-
-    // assert persistência real — usuário criado e ativo
-    const createdUser = await userService.finEmail(email);
-    expect(createdUser).not.toBeNull();
-    expect(createdUser?.isActive).toBe(true);
-    expect(createdUser?.provider).toBe('GOOGLE');
-
-    // assert infra
-    expect(reply.setCookie).toHaveBeenCalled();
-    expect(emailServiceMock.sendEmail).toHaveBeenCalled();
+    const savedUser = await userService.finEmail(oauthFixture.email);
+    expect(savedUser).toBeDefined();
+    expect(savedUser?.provider).toBe('GOOGLE');
+    expect(savedUser?.providerId).toBe(oauthFixture.providerId);
   });
 
-  it('should login existing oauth user without creating another user', async () => {
-    const reply = replyMock();
-    const email = 'oauth-existing@mail.com';
+  it('should throw when user creation fails', async () => {
+    const usersServiceEdgeMock = {
+      finEmail: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
+      create: jest.fn().mockResolvedValue(undefined),
+    };
+    const edgeModule: TestingModule = await Test.createTestingModule({
+      providers: [
+        AuthService,
+        { provide: UsersService, useValue: usersServiceEdgeMock },
+        { provide: EmailService, useValue: emailServiceMock },
+      ],
+      imports: [
+        MyLoggerModule,
+        DatabaseModule,
+        TokenModule,
+        JwtModule.register({ secret: process.env.JWT_SECRET }),
+      ],
+    }).compile();
+    const edgeService = edgeModule.get<AuthService>(AuthService);
 
-    // arrange — cria usuário existente direto no banco
-    await db.user.create({
-      data: {
-        email,
-        provider: 'GOOGLE',
-        providerId: 'google-seed',
-        isActive: true,
-      },
+    await expect(edgeService.loginOauth(oauthFixture, replyMock)).rejects.toThrow(
+      'User creation failed',
+    );
+  });
+
+  it('should login existing oauth user and set cookie', async () => {
+    await userService.create({
+      email: oauthFixture.email,
+      createdAt: new Date(),
+      isActive: true,
+      provider: oauthFixture.provider,
+      providerId: oauthFixture.providerId,
     });
 
-    const result = await service.loginOauth(
-      {
-        email,
-        name: 'OAuth Existing',
-        provider: 'GOOGLE',
-        providerId: 'google-seed',
-      },
-      reply,
-    );
+    const result = await service.loginOauth(oauthFixture, replyMock);
 
-    // assert retorno
     expect(result.success).toBe(true);
-
-    // assert não duplicou usuário
-    const users = await db.user.findMany({ where: { email } });
-    expect(users).toHaveLength(1);
-
-    // assert cookie setado mas email NÃO enviado (usuário já existia)
-    expect(reply.setCookie).toHaveBeenCalled();
+    expect(result.message).toBe('Login successful');
+    expect(result.token).toBeDefined();
+    expect(replyMock.setCookie).toHaveBeenCalled();
     expect(emailServiceMock.sendEmail).not.toHaveBeenCalled();
   });
 });
