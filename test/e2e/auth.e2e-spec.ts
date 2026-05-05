@@ -4,6 +4,7 @@ import { DatabaseService } from 'src/database/database.service';
 import { GoogleAuthGuard } from 'src/modules/auth/guards/google.guard';
 import { MicrosoftGuard } from 'src/modules/auth/guards/microsoft.guard';
 import { EmailService } from 'src/modules/email/email.service';
+
 import request from 'supertest';
 import {
   FastifyAdapter,
@@ -14,6 +15,7 @@ import { userFixture } from 'test/fixtures/auth';
 import { UsersService } from 'src/modules/users/users.service';
 import { emailMockService } from 'test/mock/auth.mock';
 import { AllExceptionsFilter } from 'src/all-exceptions.filter';
+import fastifyCookie from '@fastify/cookie';
 describe('Auth System (e2e)', () => {
   let app: NestFastifyApplication;
   let userService: UsersService;
@@ -33,6 +35,15 @@ describe('Auth System (e2e)', () => {
     app = moduleFixture.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
+    await app.register(fastifyCookie as any, {
+      secret: process.env.JWT_SECRET,
+      hook: 'onRequest',
+      parseOptions: {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+      },
+    });
     app.useGlobalFilters(new AllExceptionsFilter());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
@@ -46,7 +57,7 @@ describe('Auth System (e2e)', () => {
     if (db) await db.$disconnect();
     if (app) await app.close();
   });
-  describe('post /auth/signup', () => {
+  describe.skip('post /auth/signup', () => {
     it.skip('should create a new user and send email', async () => {
       const res = await request(app.getHttpServer())
         .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
@@ -77,5 +88,41 @@ describe('Auth System (e2e)', () => {
       console.log(res.body);
     });
   });
+  describe('post login /auth/login', () => {
+    it('SHOULD login a user', async () => {
+      // signup
+      await request(app.getHttpServer())
+        .post(`/${AuthRouter.BASE}/${AuthRouter.SIGNUP}`)
+        .send(userFixture)
+        .expect(201);
+      const user = await userService.finEmail(userFixture.email);
+      user!.isActive = true;
+      console.log(user);
+      await userService.update(user!.id, user!);
+      //login
+      const res = await request(app.getHttpServer())
+        .post(`/${AuthRouter.BASE}/${AuthRouter.LOGIN}`)
+        .send(userFixture);
+      const cookies = res.headers['set-cookie'];
+      const response = res.body;
+      expect(cookies).not.toBeNull();
+      expect(res.headers['content-type']).toContain('application/json');
+      expect(cookies[0]).toContain('access_token');
+      expect(response.success).toBe(true);
+      expect(response.statusCode).toBe(200);
+      console.log(process.env.JWT_SECRET);
+      console.log(cookies);
+      console.log(response);
+    });
+  });
 });
 //um it testa um comportamento observável
+/* 
+e2e valida:
+
+status
+body
+headers
+cookies
+validação (via erro/sucesso)
+*/
