@@ -1,12 +1,9 @@
-import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { AppModule } from 'src/app.module';
 import { DatabaseService } from 'src/database/database.service';
 import { GoogleAuthGuard } from 'src/modules/auth/guards/google.guard';
 import { MicrosoftGuard } from 'src/modules/auth/guards/microsoft.guard';
 import { EmailService } from 'src/modules/email/email.service';
-import { TokenService } from 'src/modules/token/token.service';
-import { App } from 'supertest/types';
 import request from 'supertest';
 import {
   FastifyAdapter,

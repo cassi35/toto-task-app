@@ -9,8 +9,10 @@ import { TokenModule } from 'src/modules/token/token.module';
 import { TokenService } from 'src/modules/token/token.service';
 import { UsersModule } from 'src/modules/users/users.module';
 import { UsersService } from 'src/modules/users/users.service';
+import { MyLoggerModule } from 'src/my-logger/my-logger.module';
+import { userFixture } from 'test/fixtures/auth';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
-describe('forgotPasswordService (integration)', () => {
+describe('signupService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
   let userService: UsersService;
@@ -22,9 +24,11 @@ describe('forgotPasswordService (integration)', () => {
         { provide: EmailService, useValue: emailServiceMock },
       ],
       imports: [
+        MyLoggerModule,
         DatabaseModule,
         UsersModule,
         TokenModule,
+        EmailModule,
         JwtModule.register({ secret: process.env.JWT_SECRET }),
       ],
     }).compile();
@@ -42,4 +46,22 @@ describe('forgotPasswordService (integration)', () => {
   afterAll(async () => {
     await db.$disconnect();
   });
+  it('should signup a user sucecessfully', async () => {
+    const result = await service.singup(userFixture);
+    const userId = await userService.finEmail(userFixture.email);
+    console.log(result);
+    console.log(process.env.DATABASE_URL);
+    expect(result.statusCode).toBe(201);
+    expect(userId?.email).toBe(userFixture.email);
+    expect(emailServiceMock.sendEmail).toHaveBeenCalled();
+  });
 });
+// regra geral
+// persistência → real
+// regra de negócio → real
+// infra externa → mock
+
+/* 
+AbordagemQuando usarit individualCasos de erro, 
+validações, edge casesFluxo completoHappy path do signup end-to-end
+*/
