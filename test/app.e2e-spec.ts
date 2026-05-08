@@ -20,6 +20,10 @@ describe('AppController (e2e)', () => {
     return request(app.getHttpServer())
       .get('/')
       .expect(200)
-      .expect('Hello World!');
+      .expect('Hello World! NestJS 2026!!!');
+  });
+
+  afterAll(async () => {
+    if (app) await app.close();
   });
 });

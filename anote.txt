@@ -241,3 +241,53 @@ jobs:
 upgrade 
 separar na camada domain e infra tratamento de erro 
 camada limpa com tratamnento de erro 
+---------------------------
+escalabilidade
+K6 
+É simulação de carga:
+
+muitas requisições simultâneas
+aumento progressivo de usuários
+medição de:
+tempo de resposta
+erros (5xx, timeout)
+uso de CPU/RAM
+comportamento do banco
+Backend
+endpoints começam a ficar lentos?
+erro 500 aumenta?
+Banco
+query lenta?
+falta índice?
+Infra
+CPU sobe 100%?
+memória estoura?
+Se você ignorar isso, não vai evoluir em escalabilidade:
+
+Load balancing (distribuir tráfego)
+Cache (Redis, CDN)
+Indexação de banco
+Connection pooling
+Filas (RabbitMQ, Kafka básico)
+Stateless API (essencial pra escalar horizontalmente)
+--------------------------------------------
+seguranca 
+É simular ataques:
+
+tentar login com força bruta
+tentar SQL injection em input
+acessar rota sem permissão
+enviar payload inválido
+
+Ferramentas:
+
+Postman (manual)
+OWASP ZAP (automático básico)
+Burp Suite (mais avançado)
+Segurança backend =
+
+proteger entrada (input)
+proteger autenticação (login)
+proteger acesso (roles)
+proteger API (rate limit, headers)
+evitar falhas comuns (SQLi, XSS)
