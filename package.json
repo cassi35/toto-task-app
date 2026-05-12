@@ -25,7 +25,10 @@
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate deploy",
     "test:integration": "jest --config ./test/jest-integration.json",
-    "test:e2e:file": "jest -c test/jest-e2e.json"
+    "test:e2e:file": "jest -c test/jest-e2e.json",
+    "test:unit": "jest --runInBand --detectOpenHandles",
+    "test:unit:file": "jest -c test/jest-unit.json",
+    "test:convert": "find test -type f \\( -name '*.spec.ts' -o -name '*.unit.spec.ts' -o -name '*.integration.spec.ts' -o -name '*.e2e-spec.ts' -o -name '*.e2e.spec.ts' -o -name '*.unit.unit.spec.ts' -o -name '*.integration.integration.spec.ts' \\) | while read file; do dir=$(dirname \"$file\"); base=$(basename \"$file\"); clean=$(echo \"$base\" | sed -E 's/(\\.(unit|integration|e2e))+//g' | sed -E 's/(\\.spec|-spec)\\.ts$//'); case \"$file\" in *'/unit/'*) new=\"$dir/$clean.unit.spec.ts\" ;; *'/integration/'*) new=\"$dir/$clean.integration.spec.ts\" ;; *'/e2e/'*|*'.e2e-spec.ts') new=\"$dir/$clean.e2e-spec.ts\" ;; *) continue ;; esac; if [ \"$file\" != \"$new\" ]; then mv \"$file\" \"$new\"; fi; done"
   },
   "dependencies": {
     "@fastify/cookie": "^11.0.2",
