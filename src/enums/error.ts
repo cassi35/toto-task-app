@@ -1,0 +1,5 @@
+export enum PrismaErrorCode {
+  USER_ALREADY_EXISTS = 'P2002',
+  RECORD_NOT_FOUND = 'P2025',
+  FOREIGN_KEY_FAILED = 'P2003',
+}

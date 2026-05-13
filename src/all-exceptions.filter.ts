@@ -7,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { Prisma } from '@prisma/client';
+import { PrismaErrorCode } from './enums/error';
 
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
@@ -25,17 +26,17 @@ export class AllExceptionsFilter implements ExceptionFilter {
       message = typeof res === 'string' ? res : res['message'] || res;
     } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
       switch (exception.code) {
-        case 'P2002':
+        case PrismaErrorCode.USER_ALREADY_EXISTS:
           status = HttpStatus.CONFLICT;
           message = 'Unique constraint failed';
           break;
 
-        case 'P2025':
+        case PrismaErrorCode.RECORD_NOT_FOUND:
           status = HttpStatus.NOT_FOUND;
           message = 'Record not found';
           break;
 
-        case 'P2003':
+        case PrismaErrorCode.FOREIGN_KEY_FAILED:
           status = HttpStatus.BAD_REQUEST;
           message = 'Foreign key constraint failed';
           break;
