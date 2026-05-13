@@ -39,6 +39,7 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
  npm i testcontainers
  npm install -g neonctl
  npm install @testcontainers/postgresql --save-dev
+ npm i @faker-js/faker
  desativar   // eslintPluginPrettierRecommended,
 nest g module my-logger
  @Module({
