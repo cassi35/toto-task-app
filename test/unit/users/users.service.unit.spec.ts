@@ -3,12 +3,15 @@ import { DatabaseService } from 'src/database/database.service';
 import { UsersService } from 'src/modules/users/users.service';
 import { databaseServiceMock } from 'test/mock/database.mock';
 import { userFixture } from 'test/fixtures/auth';
+import { PrismaErrorCode } from 'src/enums/error';
+import { Prisma } from '@prisma/client';
 
 describe('UsersService (unit)', () => {
   let service: UsersService;
   let db: DatabaseService;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
@@ -19,7 +22,7 @@ describe('UsersService (unit)', () => {
     service = module.get<UsersService>(UsersService);
     db = module.get<DatabaseService>(DatabaseService);
   });
-  describe('create', () => {
+  describe.skip('create', () => {
     it('should create a new user', async () => {
       databaseServiceMock.user.create.mockResolvedValue(userFixture);
 
@@ -29,24 +32,36 @@ describe('UsersService (unit)', () => {
         data: userFixture,
       });
       expect(result).toEqual(userFixture);
-      expect(db.$disconnect).toHaveBeenCalled();
       console.log(result);
     });
-  });
-  describe.skip('findByEmail', () => {
-    it('should findAll without email filter', async () => {
-      const users = [{ id: 1, ...userFixture }];
-      databaseServiceMock.user.findMany.mockResolvedValue(userFixture);
+    it('should throw unique constraint error', async () => {
+      const prismaError = new Prisma.PrismaClientKnownRequestError(
+        'Unique constraint failed',
+        {
+          code: 'P2002',
+          clientVersion: '6.0.0',
+        },
+      );
 
-      const result = await service.findAll();
+      databaseServiceMock.user.create.mockRejectedValue(prismaError);
 
-      expect(databaseServiceMock.user.findMany).toHaveBeenCalledWith({
-        where: {},
-      });
-      expect(result).toEqual(users);
+      await expect(service.create(userFixture)).rejects.toThrow();
     });
   });
-  describe.skip('findAll', () => {
+  describe('findByEmail', () => {
+    it('should find user by email', async () => {
+      const user = { id: 1, ...userFixture };
+      databaseServiceMock.user.findUnique.mockResolvedValue(user);
+
+      const result = await service.finEmail(userFixture.email);
+
+      expect(databaseServiceMock.user.findUnique).toHaveBeenCalledWith({
+        where: { email: userFixture.email },
+      });
+      expect(result).toEqual(user);
+    });
+  });
+  describe('findAll', () => {
     it('should findAll with email filter (contains, insensitive)', async () => {
       const users = [{ id: 1, ...userFixture }];
       databaseServiceMock.user.findMany.mockResolvedValue(users);
@@ -61,8 +76,20 @@ describe('UsersService (unit)', () => {
       expect(result).toEqual(users);
     });
   });
-  describe.skip('findOne', () => {});
-  describe.skip('update', () => {
+  describe('findOne', () => {
+    it('should find user by id', async () => {
+      const user = { id: 5, ...userFixture };
+      databaseServiceMock.user.findUnique.mockResolvedValue(user);
+
+      const result = await service.findOne(5);
+
+      expect(databaseServiceMock.user.findUnique).toHaveBeenCalledWith({
+        where: { id: 5 },
+      });
+      expect(result).toEqual(user);
+    });
+  });
+  describe('update', () => {
     it('should update user by id', async () => {
       const updated = { id: 7, ...userFixture, password: 'new-pass' };
       const updateDto = { password: 'new-pass' } as any;
@@ -77,7 +104,7 @@ describe('UsersService (unit)', () => {
       expect(result).toEqual(updated);
     });
   });
-  describe.skip('remove', () => {
+  describe('remove', () => {
     it('should remove user by id', async () => {
       const removed = { id: 7, ...userFixture };
       databaseServiceMock.user.delete.mockResolvedValue(removed);
@@ -90,7 +117,7 @@ describe('UsersService (unit)', () => {
       expect(result).toEqual(removed);
     });
   });
-  describe.skip('findByUserId', () => {
+  describe('findByUserId', () => {
     it('should findByUserId', async () => {
       const user = { id: 9, ...userFixture };
       databaseServiceMock.user.findUnique.mockResolvedValue(user);

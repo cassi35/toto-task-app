@@ -31,6 +31,7 @@
     "test:convert": "find test -type f \\( -name '*.spec.ts' -o -name '*.unit.spec.ts' -o -name '*.integration.spec.ts' -o -name '*.e2e-spec.ts' -o -name '*.e2e.spec.ts' -o -name '*.unit.unit.spec.ts' -o -name '*.integration.integration.spec.ts' \\) | while read file; do dir=$(dirname \"$file\"); base=$(basename \"$file\"); clean=$(echo \"$base\" | sed -E 's/(\\.(unit|integration|e2e))+//g' | sed -E 's/(\\.spec|-spec)\\.ts$//'); case \"$file\" in *'/unit/'*) new=\"$dir/$clean.unit.spec.ts\" ;; *'/integration/'*) new=\"$dir/$clean.integration.spec.ts\" ;; *'/e2e/'*|*'.e2e-spec.ts') new=\"$dir/$clean.e2e-spec.ts\" ;; *) continue ;; esac; if [ \"$file\" != \"$new\" ]; then mv \"$file\" \"$new\"; fi; done"
   },
   "dependencies": {
+    "@faker-js/faker": "^10.4.0",
     "@fastify/cookie": "^11.0.2",
     "@fastify/passport": "^3.0.2",
     "@fastify/rate-limit": "^6.0.0",
@@ -55,6 +56,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.4",
     "cookie-parser": "^1.4.7",
+    "faker": "^6.6.6",
     "fastify": "^5.8.4",
     "fastmcp": "^4.0.0",
     "nodemailer": "^8.0.3",

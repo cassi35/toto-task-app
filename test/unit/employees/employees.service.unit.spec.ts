@@ -1,9 +1,14 @@
-import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
-import { Prisma } from '@prisma/client';
-
+import { Test, TestingModule } from '@nestjs/testing';
+import { Role } from '@prisma/client';
 import { DatabaseService } from 'src/database/database.service';
 import { EmployeesService } from 'src/modules/employees/employees.service';
+import {
+  createEmployeeFixture,
+  employeeFixture,
+  employeesFixture,
+  updateEmployeeFixture,
+} from 'test/fixtures/employee.fixture';
 import { databaseServiceMock } from 'test/mock/database.mock';
 
 describe('EmployeesService (unit)', () => {
@@ -22,115 +27,80 @@ describe('EmployeesService (unit)', () => {
     service = module.get<EmployeesService>(EmployeesService);
   });
 
-  it('should create an employee', async () => {
-    const input: Prisma.EmployeeCreateInput = {
-      name: 'Cassiano',
-      email: 'mestre@gmail.com',
-      role: 'ENGINEER',
-    };
+  describe('create', () => {
+    it('should create employee', async () => {
+      databaseServiceMock.employee.create.mockResolvedValue(employeeFixture);
 
-    const created = { id: 1, ...input };
-    databaseServiceMock.employee.create.mockResolvedValue(created);
+      const result = await service.create(createEmployeeFixture);
 
-    const result = await service.create(input);
-
-    expect(databaseServiceMock.employee.create).toHaveBeenCalledWith({
-      data: input,
+      expect(databaseServiceMock.employee.create).toHaveBeenCalledWith({
+        data: createEmployeeFixture,
+      });
+      expect(result).toEqual(employeeFixture);
     });
-    expect(result).toEqual(created);
   });
 
-  it('should return all employees by role', async () => {
-    const role = 'ENGINEER' as const;
+  describe('findAll', () => {
+    it('should return employees by role', async () => {
+      databaseServiceMock.employee.findMany.mockResolvedValue(employeesFixture);
 
-    const employees = [
-      {
-        id: 1,
-        name: 'Cassiano',
-        email: 'mestre@gmail.com',
-        role,
-      },
-    ];
+      const result = await service.findAll(Role.ENGINEER);
 
-    databaseServiceMock.employee.findAll.mockResolvedValue({
-      employees,
+      expect(databaseServiceMock.employee.findMany).toHaveBeenCalledWith({
+        where: { role: Role.ENGINEER },
+      });
+      expect(result).toEqual(employeesFixture);
     });
-
-    const result = await service.findAll(role);
-
-    expect(databaseServiceMock.employee.findAll).toHaveBeenCalledWith({
-      where: { role },
-    });
-    expect(result).toEqual(employees);
   });
 
-  it('should return employee by id', async () => {
-    const employee = {
-      id: 7,
-      name: 'Cassiano',
-      email: 'mestre@gmail.com',
-      role: 'ENGINEER',
-    };
+  describe('findOne', () => {
+    it('should return employee by id', async () => {
+      databaseServiceMock.employee.findUnique.mockResolvedValue(employeeFixture);
 
-    databaseServiceMock.employee.findOne.mockResolvedValue(employee);
+      const result = await service.findOne(employeeFixture.id);
 
-    const result = await service.findOne(7);
-
-    expect(databaseServiceMock.employee.findOne).toHaveBeenCalledWith({
-      where: { id: 7 },
+      expect(databaseServiceMock.employee.findUnique).toHaveBeenCalledWith({
+        where: { id: employeeFixture.id },
+      });
+      expect(result).toEqual(employeeFixture);
     });
-    expect(result).toEqual(employee);
+
+    it('should throw when employee is not found', async () => {
+      databaseServiceMock.employee.findUnique.mockResolvedValue(null);
+
+      await expect(service.findOne(employeeFixture.id)).rejects.toThrow(
+        new NotFoundException('Employee not found'),
+      );
+    });
   });
 
-  it('should throw NotFoundException if employee does not exist', async () => {
-    databaseServiceMock.employee.findOne.mockResolvedValue(null);
+  describe('update', () => {
+    it('should update employee by id', async () => {
+      const updatedEmployee = { ...employeeFixture, ...updateEmployeeFixture };
+      databaseServiceMock.employee.findUnique.mockResolvedValue(employeeFixture);
+      databaseServiceMock.employee.update.mockResolvedValue(updatedEmployee);
 
-    await expect(service.findOne(999)).rejects.toBeInstanceOf(
-      NotFoundException,
-    );
+      const result = await service.update(employeeFixture.id, updateEmployeeFixture);
 
-    await expect(service.findOne(999)).rejects.toThrow('Employee not found');
+      expect(databaseServiceMock.employee.update).toHaveBeenCalledWith({
+        where: { id: employeeFixture.id },
+        data: updateEmployeeFixture,
+      });
+      expect(result).toEqual(updatedEmployee);
+    });
   });
 
-  it('should update employee', async () => {
-    const existing = {
-      id: 7,
-      name: 'Cassiano',
-      email: 'mestre@gmail.com',
-      role: 'ENGINEER',
-    };
+  describe('remove', () => {
+    it('should remove employee by id', async () => {
+      databaseServiceMock.employee.findUnique.mockResolvedValue(employeeFixture);
+      databaseServiceMock.employee.delete.mockResolvedValue(employeeFixture);
 
-    const updateDto = { name: 'Updated' } as Prisma.EmployeeUpdateInput;
-    const updated = { ...existing, ...updateDto, id: existing.id };
+      const result = await service.remove(employeeFixture.id);
 
-    databaseServiceMock.employee.findOne.mockResolvedValue(existing);
-    databaseServiceMock.employee.update.mockResolvedValue(updated);
-
-    const result = await service.update(existing.id, updateDto);
-
-    expect(databaseServiceMock.employee.update).toHaveBeenCalledWith({
-      where: { id: existing.id },
-      data: updateDto,
+      expect(databaseServiceMock.employee.delete).toHaveBeenCalledWith({
+        where: { id: employeeFixture.id },
+      });
+      expect(result).toEqual(employeeFixture);
     });
-    expect(result).toEqual(updated);
-  });
-
-  it('should remove employee by id', async () => {
-    const existing = {
-      id: 7,
-      name: 'Cassiano',
-      email: 'mestre@gmail.com',
-      role: 'ENGINEER',
-    };
-
-    databaseServiceMock.employee.findOne.mockResolvedValue(existing);
-    databaseServiceMock.employee.remove.mockResolvedValue(existing);
-
-    const result = await service.remove(existing.id);
-
-    expect(databaseServiceMock.employee.remove).toHaveBeenCalledWith({
-      where: { id: existing.id },
-    });
-    expect(result).toEqual(existing);
   });
 });
