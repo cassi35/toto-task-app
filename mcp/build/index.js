@@ -6,6 +6,20 @@ import { CreateMessageResultSchema } from '@modelcontextprotocol/sdk/types.js';
 import path from 'path';
 import { fileURLToPath } from 'node:url';
 const __filename = fileURLToPath(import.meta.url);
+import fsSync from 'node:fs';
+// await fs.writeFile(
+//   '../src/common/exeptions/',
+//   'export const test = "ok"\n',
+//   (err) => {
+//     if (err) {
+//       console.error(err);
+//       process.exit(1);
+//     } else {
+//       console.log('arquivo criado');
+//     }
+//   },
+// );
+// console.log('arquivo criado');
 const __dirname = path.dirname(__filename);
 const server = new McpServer({
     name: 'mcp server',
@@ -56,6 +70,81 @@ server.resource('users', 'users://all', {
             },
         ],
     };
+});
+server.tool('create_exception', 'create a new exception in the src', {
+    domain: z.string(),
+    context: z.string(),
+    errorCases: z.array(z.object({
+        name: z.string(),
+        message: z.string(),
+        code: z.string(),
+    })),
+}, async (params) => {
+    try {
+        for (const errorCase of params.errorCases) {
+            const filePath = `../src/common/exeptions/${errorCase.name}.exception.ts`;
+            const exists = fsSync.existsSync(filePath);
+            if (exists) {
+                continue;
+            }
+            const template = `
+import { HttpException, HttpStatus } from '@nestjs/common';
+
+export default class ${errorCase.name} extends HttpException {
+  constructor() {
+    super('${errorCase.message}', ${errorCase.code});
+  }
+}
+`;
+            await fs.writeFile(filePath, template, async (err) => {
+                if (err) {
+                    console.error(err);
+                    process.exit(1);
+                }
+            });
+        }
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: params.errorCases.map((e) => e.name).join(', '),
+                },
+            ],
+        };
+    }
+    catch (error) {
+        return {
+            content: [
+                {
+                    type: 'text',
+                    text: String(error),
+                },
+            ],
+        };
+    }
+});
+server.tool('create_state', 'creation state', { states: z.array(z.string()) }, {
+    title: 'Create state',
+    readOnlyHint: true,
+    destructiveHint: false,
+    idempotentHint: false,
+    openWorldHint: true,
+}, (param) => {
+    try {
+        return {
+            content: [
+                { type: 'text', text: 'state created' },
+                { type: 'text', text: param.states.join(' ') },
+            ],
+        };
+    }
+    catch (error) {
+        return {
+            content: [
+                { type: 'text', text: 'failed to save user' + String(error) },
+            ],
+        };
+    }
 });
 server.tool('create_user', 'create a new user in the database', {
     name: z.string(),
@@ -134,7 +223,9 @@ server.tool('create-ramdom-user', 'create a random user in the database', {
     }
     catch (err) {
         return {
-            content: [{ type: 'text', text: `failed to save user: ${String(err)}` }],
+            content: [
+                { type: 'text', text: `failed to save user: ${String(err)}` },
+            ],
             isError: true,
         };
     }
@@ -143,7 +234,13 @@ server.tool('create-ramdom-user', 'create a random user in the database', {
 function generateLocalFakeUser() {
     const firstNames = ['Ana', 'Bruno', 'Carla', 'Diego', 'Elisa', 'Fabio'];
     const lastNames = ['Silva', 'Souza', 'Oliveira', 'Costa', 'Mendes', 'Lima'];
-    const streets = ['Rua A', 'Rua B', 'Av. Central', 'Rua das Flores', 'Alameda 2'];
+    const streets = [
+        'Rua A',
+        'Rua B',
+        'Av. Central',
+        'Rua das Flores',
+        'Alameda 2',
+    ];
     const first = firstNames[Math.floor(Math.random() * firstNames.length)];
     const last = lastNames[Math.floor(Math.random() * lastNames.length)];
     const name = `${first} ${last}`;
@@ -175,9 +272,66 @@ async function createUser(param) {
     fs.writeFileSync(dataPath, JSON.stringify(users, null, 2));
     return id;
 }
+async function createException() { }
 async function main() {
-    const transport = new StdioServerTransport();
-    await server.connect(transport);
+    try {
+        const transport = new StdioServerTransport();
+        await server.connect(transport);
+    }
+    catch (err) {
+        console.error(err);
+    }
 }
 main();
+/*
+readOnlyHint
+readOnlyHint: false
+
+Significa:
+
+a tool altera algo
+escreve arquivo
+muda banco
+cria/deleta conteúdo
+
+Se fosse:
+
+readOnlyHint: true
+
+seria:
+
+apenas leitura
+sem efeitos colaterais
+
+Exemplo:
+
+listar arquivos
+consultar banco
+buscar logs
+destructiveHint
+destructiveHint: false
+
+Significa:
+
+não destrói dados importantes
+
+Se fosse:
+
+destructiveHint: true
+
+exemplo:
+
+deletar arquivos
+truncar tabela
+remover usuário
+resetar projeto
+
+A IA tende a tomar mais cuidado.
+
+idempotentHint
+idempotentHint: false
+
+Idempotência:
+executar várias vezes gera o mesmo resultado.
+*/
 //# sourceMappingURL=index.js.map
