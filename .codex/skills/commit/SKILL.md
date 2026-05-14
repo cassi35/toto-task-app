@@ -66,6 +66,7 @@ Seguir rigorosamente:
   3.  assim sucessivamente ...
 
   4.  git push origin
+  5.  git pull (para atualizar)
 
 # lembrando
 
