@@ -201,4 +201,7 @@ describe('AuthService', () => {
       );
     });
   });
+  describe('signup', () => {
+    it('should sinup a new user', async () => {});
+  });
 });

@@ -10,12 +10,13 @@ import { FastifyReply, FastifyRequest } from 'fastify';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
-
 import { TokenService } from '../token/token.service';
 import { AtuhResponseDto } from './dto/response/base-response.dto';
 import { EmailService } from '../email/email.service';
 import { OauthUser } from 'src/types';
 import { isEmail } from 'class-validator';
+import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
+
 @Injectable()
 export class AuthService {
   constructor(
