@@ -42,6 +42,26 @@ jobs:
 
   e2e:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      JWT_SECRET: test-secret
+      SENDER_EMAIL_FROM_GMAIL: test@mail.com
+      SENHA_DE_APP: test
+      CLIENT_ID: test
+      CLIENT_SECRET_GOOGLE: test
+      REFRESH_TOKEN: test
+      EMAIL_USER: test@mail.com
+      CLIENT_ID_AUTH: test
+      CLIENT_SECRET_AUTH: test
+      CLIENT_SECRET_AZURE: test
+      TENANT_ID: test
+      CLIENT_ID_AZURE: test
+      MICROSOFT_AUTH_URL: http://localhost/microsoft/callback
+      GOOGLE_AUTH_URL: http://localhost/google/callback
+      GOOGLE_LOGIN: https://accounts.google.com/o/oauth2/v2/auth?
+      MICROSOFT_LOGIN: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?
+      FRONTEND_URL_DEV: http://localhost:3000
+      RENDER_BASE_URL: http://localhost:3000
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
