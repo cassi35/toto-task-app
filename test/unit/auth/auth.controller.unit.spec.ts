@@ -1,20 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthController } from 'src/modules/auth/auth.controller';
 import { AuthService } from 'src/modules/auth/auth.service';
+import { authServiceMock } from 'test/mock/services/authService.mock';
 
 describe('AuthController', () => {
   let controller: AuthController;
 
-  const authServiceMock = {
-    login: jest.fn(),
-    singup: jest.fn(),
-    logout: jest.fn(),
-    forgotPassword: jest.fn(),
-    resetPassoword: jest.fn(),
-    verifyEmail: jest.fn(),
-    redirect: jest.fn(),
-    loginOauth: jest.fn(),
-  };
+  // const authServiceMock = {
+  //   login: jest.fn(),
+  //   singup: jest.fn(),
+  //   logout: jest.fn(),
+  //   forgotPassword: jest.fn(),
+  //   resetPassoword: jest.fn(),
+  //   verifyEmail: jest.fn(),
+  //   redirect: jest.fn(),
+  //   loginOauth: jest.fn(),
+  // };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({

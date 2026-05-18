@@ -3,24 +3,19 @@ import { Role } from '@prisma/client';
 import { EmployeesController } from 'src/modules/employees/employees.controller';
 import { EmployeesService } from 'src/modules/employees/employees.service';
 import EmployeeNotFoundException from 'src/common/exeptions/employees/employee-not-found.exception';
+import { employeesServiceMock } from 'test/mock/services/employee.mock';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
-
-  const employeesServiceMock = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [EmployeesController],
-      providers: [{ provide: EmployeesService, useValue: employeesServiceMock }],
+      providers: [
+        { provide: EmployeesService, useValue: employeesServiceMock },
+      ],
     }).compile();
 
     controller = module.get<EmployeesController>(EmployeesController);
@@ -85,7 +80,9 @@ describe('EmployeesController', () => {
 
   it('should remove an employee', async () => {
     employeesServiceMock.remove.mockResolvedValue({ id: 4 });
-    employeesServiceMock.findOne.mockRejectedValue(new EmployeeNotFoundException());
+    employeesServiceMock.findOne.mockRejectedValue(
+      new EmployeeNotFoundException(),
+    );
 
     await controller.remove('4');
 
