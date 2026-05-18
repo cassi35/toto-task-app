@@ -108,6 +108,7 @@ server.tool(
         const exists = fsSync.existsSync(filePath);
 
         if (exists) {
+          console.error('exception already exists');
           continue;
         }
 
