@@ -12,6 +12,9 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { userFixture } from 'test/fixtures/auth';
 import { userFixtureCreate } from 'test/fixtures/user.fixture';
+import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
+import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
+import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
 
 describe('forgotPasswordService (integration)', () => {
   let service: AuthService;
@@ -59,7 +62,7 @@ describe('forgotPasswordService (integration)', () => {
       service.forgotPassword({
         email: 'invalid-email',
       }),
-    ).rejects.toThrow('Invalid email');
+    ).rejects.toThrow(new InvalidEmailException());
   });
 
   it('should throw if user not found', async () => {
@@ -67,7 +70,7 @@ describe('forgotPasswordService (integration)', () => {
       service.forgotPassword({
         email: userFixture.email,
       }),
-    ).rejects.toThrow('User not found');
+    ).rejects.toThrow(new UserNotFoundException());
   });
 
   it('should throw if token already exists', async () => {
@@ -83,7 +86,7 @@ describe('forgotPasswordService (integration)', () => {
       service.forgotPassword({
         email: userFixture.email,
       }),
-    ).rejects.toThrow('token already exists');
+    ).rejects.toThrow(new TokenAlreadyExistsException());
   });
 
   it('should generate token, persist and send email on success', async () => {

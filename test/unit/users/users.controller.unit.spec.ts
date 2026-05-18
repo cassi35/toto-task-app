@@ -1,25 +1,17 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from 'src/modules/users/users.controller';
 import { UsersService } from 'src/modules/users/users.service';
+import { databaseServiceMock } from 'test/mock/database.mock';
 
 describe('UsersController (unit)', () => {
   let controller: UsersController;
-
-  const usersServiceMock = {
-    create: jest.fn(),
-    findAll: jest.fn(),
-    findOne: jest.fn(),
-    update: jest.fn(),
-    remove: jest.fn(),
-  };
-
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
       providers: [
         {
           provide: UsersService,
-          useValue: usersServiceMock,
+          useValue: databaseServiceMock.user,
         },
       ],
     }).compile();

@@ -12,6 +12,8 @@ import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { userFixtureCreate } from 'test/fixtures/user.fixture';
+import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
+import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
 
 describe('resetPasswordService (integration)', () => {
   let service: AuthService;
@@ -68,7 +70,7 @@ describe('resetPasswordService (integration)', () => {
         token: 'missing-token',
         newPassword: 'NovaSenha@2026',
       }),
-    ).rejects.toThrow('Token not found');
+    ).rejects.toThrow(new TokenNotFoundException());
   });
 
   it('should throw if token expired', async () => {
@@ -85,7 +87,7 @@ describe('resetPasswordService (integration)', () => {
         token: createdToken.token,
         newPassword: 'NovaSenha@2026',
       }),
-    ).rejects.toThrow('Token expired');
+    ).rejects.toThrow(new TokenExpiredException());
   });
 
   it('should throw if token is invalid (mismatch)', async () => {
@@ -95,7 +97,7 @@ describe('resetPasswordService (integration)', () => {
         token: 'different-reset-token',
         newPassword: 'NovaSenha@2026',
       }),
-    ).rejects.toThrow('Token not found');
+    ).rejects.toThrow(new TokenNotFoundException());
   });
 
   it('should update password and consume token on success', async () => {

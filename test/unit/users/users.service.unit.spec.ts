@@ -2,9 +2,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseService } from 'src/database/database.service';
 import { UsersService } from 'src/modules/users/users.service';
 import { databaseServiceMock } from 'test/mock/database.mock';
-import { userFixture } from 'test/fixtures/auth';
 import { PrismaErrorCode } from 'src/enums/error';
 import { Prisma } from '@prisma/client';
+import { userFixture } from 'test/fixtures/auth';
 
 describe('UsersService (unit)', () => {
   let service: UsersService;

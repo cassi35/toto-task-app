@@ -2,6 +2,9 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
+import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
+import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
+import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
 
 import { DatabaseService } from 'src/database/database.service';
 import { AuthService } from 'src/modules/auth/auth.service';
@@ -34,11 +37,11 @@ import {
 
 const JWT_TOKEN = 'jwt-token-123';
 const HASHED_PASSWORD = 'hashed-password';
-
-const INVALID_EMAIL_ERROR = new HttpException('Invalid email', 400);
-const INVALID_PASSWORD_ERROR = new HttpException('Invalid password', 400);
-const USER_NOT_FOUND_ERROR = new HttpException('User not found', 404);
-const TOKEN_NOT_FOUND_ERROR = new HttpException('Token not found', 404);
+jest.mock('bcrypt', () => ({
+  compare: jest.fn(),
+  genSalt: jest.fn(),
+  hash: jest.fn(),
+}));
 
 describe('AuthService', () => {
   let service: AuthService;
@@ -132,7 +135,7 @@ describe('AuthService', () => {
     it('should login user with valid credentials', async () => {
       usersServiceMock.finEmail.mockResolvedValue(userEntityFixture);
 
-      jest.spyOn(bcrypt, 'compare').mockResolvedValue(true as never);
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
 
       jwtMock.signAsync.mockResolvedValue(JWT_TOKEN);
 
@@ -156,7 +159,7 @@ describe('AuthService', () => {
           },
           replyMock as any,
         ),
-      ).rejects.toThrow(INVALID_EMAIL_ERROR);
+      ).rejects.toThrow(new InvalidEmailException());
     });
 
     it('should throw when user is not found', async () => {
@@ -164,7 +167,7 @@ describe('AuthService', () => {
 
       await expect(
         service.login(loginDtoFixture, replyMock as any),
-      ).rejects.toThrow(USER_NOT_FOUND_ERROR);
+      ).rejects.toThrow(new UserNotFoundException());
     });
   });
 
@@ -197,7 +200,7 @@ describe('AuthService', () => {
       tokenServiceMock.findByToken.mockResolvedValue(null);
 
       await expect(service.verifyEmail('missing-token')).rejects.toThrow(
-        TOKEN_NOT_FOUND_ERROR,
+        new TokenNotFoundException(),
       );
     });
   });

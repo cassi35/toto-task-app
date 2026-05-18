@@ -16,6 +16,11 @@ import {
   userFixtureCreate,
   userFixtureError,
 } from 'test/fixtures/user.fixture';
+import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
+import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password.exception';
+import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
+import UserNotActiveException from 'src/common/exeptions/auth/user-not-active.exception';
+import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
 describe('loginService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
@@ -70,23 +75,23 @@ describe('loginService (integration)', () => {
 
   it('should throw if email is invalid', async () => {
     const result = service.login(userFixtureError('email'), replyMock);
-    await expect(result).rejects.toThrow('Invalid email');
+    await expect(result).rejects.toThrow(new InvalidEmailException());
   });
 
   it('should throw if password is invalid', async () => {
     const result = service.login(userFixtureError('password'), replyMock);
-    await expect(result).rejects.toThrow('Invalid password');
+    await expect(result).rejects.toThrow(new InvalidPasswordException());
   });
 
   it('should throw if user not found', async () => {
     const result = service.login(userFixture, replyMock);
-    await expect(result).rejects.toThrow('User not found');
+    await expect(result).rejects.toThrow(new UserNotFoundException());
   });
 
   it('should throw if user is not active', async () => {
     await createUser(false);
     const result = service.login(userFixture, replyMock);
-    await expect(result).rejects.toThrow('User not active');
+    await expect(result).rejects.toThrow(new UserNotActiveException());
   });
 
   it('should throw if credentials are invalid', async () => {
@@ -95,7 +100,7 @@ describe('loginService (integration)', () => {
       { email: userFixture.email, password: '123456788929' },
       replyMock,
     );
-    await expect(result).rejects.toThrow('Invalid credentials');
+    await expect(result).rejects.toThrow(new InvalidCredentialsException());
   });
 
   it('should set cookie on login', async () => {

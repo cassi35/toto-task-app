@@ -1,6 +1,6 @@
-import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Role } from '@prisma/client';
+import EmployeeNotFoundException from 'src/common/exeptions/employees/employee-not-found.exception';
 import { DatabaseService } from 'src/database/database.service';
 import { EmployeesService } from 'src/modules/employees/employees.service';
 import {
@@ -69,7 +69,7 @@ describe('EmployeesService (unit)', () => {
       databaseServiceMock.employee.findUnique.mockResolvedValue(null);
 
       await expect(service.findOne(employeeFixture.id)).rejects.toThrow(
-        new NotFoundException('Employee not found'),
+        new EmployeeNotFoundException(),
       );
     });
   });

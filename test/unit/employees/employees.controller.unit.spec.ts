@@ -1,30 +1,29 @@
 import { Test, TestingModule } from '@nestjs/testing';
-
-import { DatabaseService } from 'src/database/database.service';
 import { Role } from '@prisma/client';
 import { EmployeesController } from 'src/modules/employees/employees.controller';
-import { EmployeesModule } from 'src/modules/employees/employees.module';
+import { EmployeesService } from 'src/modules/employees/employees.service';
+import EmployeeNotFoundException from 'src/common/exeptions/employees/employee-not-found.exception';
 
 describe('EmployeesController', () => {
   let controller: EmployeesController;
-  let db: DatabaseService;
 
-  beforeAll(async () => {
+  const employeesServiceMock = {
+    create: jest.fn(),
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    remove: jest.fn(),
+  };
+
+  beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
-      imports: [EmployeesModule],
+      controllers: [EmployeesController],
+      providers: [{ provide: EmployeesService, useValue: employeesServiceMock }],
     }).compile();
 
     controller = module.get<EmployeesController>(EmployeesController);
-    db = module.get<DatabaseService>(DatabaseService);
-  });
-
-  beforeEach(async () => {
-    await db.employee.deleteMany();
-  });
-
-  afterAll(async () => {
-    await db.employee.deleteMany();
-    await db.$disconnect();
   });
 
   it('should be defined', () => {
@@ -32,62 +31,66 @@ describe('EmployeesController', () => {
   });
 
   it('should create an employee', async () => {
-    const employee = await controller.create({
+    const created = {
+      id: 1,
+      name: 'Alice',
+      email: 'alice@test.com',
+      role: Role.ENGINEER,
+    };
+    employeesServiceMock.create.mockResolvedValue(created);
+
+    const result = await controller.create({
       name: 'Alice',
       email: 'alice@test.com',
       role: Role.ENGINEER,
     });
 
-    expect(employee.id).toBeDefined();
-    expect(employee.name).toBe('Alice');
-    expect(employee.email).toBe('alice@test.com');
-    expect(employee.role).toBe(Role.ENGINEER);
+    expect(employeesServiceMock.create).toHaveBeenCalled();
+    expect(result).toEqual(created);
   });
 
   it('should return employees filtered by role', async () => {
-    await controller.create({
-      name: 'Bob',
-      email: 'bob@test.com',
-      role: Role.INTERN,
-    });
-    await controller.create({
-      name: 'Carol',
-      email: 'carol@test.com',
-      role: Role.ADMIN,
-    });
+    const interns = [
+      {
+        id: 2,
+        name: 'Bob',
+        email: 'bob@test.com',
+        role: Role.INTERN,
+      },
+    ];
+    employeesServiceMock.findAll.mockResolvedValue(interns);
 
-    const interns = await controller.findAll('127.0.0.1', Role.INTERN);
+    const result = await controller.findAll('127.0.0.1', Role.INTERN);
 
-    expect(interns).toHaveLength(1);
-    expect(interns[0].name).toBe('Bob');
-    expect(interns[0].role).toBe(Role.INTERN);
+    expect(employeesServiceMock.findAll).toHaveBeenCalledWith(Role.INTERN);
+    expect(result).toEqual(interns);
   });
 
   it('should update an employee', async () => {
-    const employee = await controller.create({
+    const updated = {
+      id: 3,
       name: 'Dan',
       email: 'dan@test.com',
-      role: Role.INTERN,
-    });
+      role: Role.ADMIN,
+    };
+    employeesServiceMock.update.mockResolvedValue(updated);
 
-    const updated = await controller.update(String(employee.id), {
+    const result = await controller.update('3', { role: Role.ADMIN });
+
+    expect(employeesServiceMock.update).toHaveBeenCalledWith(3, {
       role: Role.ADMIN,
     });
-
-    expect(updated.id).toBe(employee.id);
-    expect(updated.role).toBe(Role.ADMIN);
+    expect(result).toEqual(updated);
   });
 
   it('should remove an employee', async () => {
-    const employee = await controller.create({
-      name: 'Eve',
-      email: 'eve@test.com',
-      role: Role.ENGINEER,
-    });
+    employeesServiceMock.remove.mockResolvedValue({ id: 4 });
+    employeesServiceMock.findOne.mockRejectedValue(new EmployeeNotFoundException());
 
-    await controller.remove(String(employee.id));
-    const found = await controller.findOne(String(employee.id));
+    await controller.remove('4');
 
-    expect(found).toBeNull();
+    await expect(controller.findOne('4')).rejects.toThrow(
+      new EmployeeNotFoundException(),
+    );
   });
 });

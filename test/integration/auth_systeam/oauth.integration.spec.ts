@@ -11,6 +11,7 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { OauthUser } from 'src/types';
 import { replyMock } from 'test/mock/reply.mock';
+import UserCreationFailedException from 'src/common/exeptions/auth/user-creation-failed.exception';
 
 describe('oauthService (integration)', () => {
   let service: AuthService;
@@ -77,7 +78,10 @@ describe('oauthService (integration)', () => {
 
   it('should throw when user creation fails', async () => {
     const usersServiceEdgeMock = {
-      finEmail: jest.fn().mockResolvedValueOnce(null).mockResolvedValueOnce(null),
+      finEmail: jest
+        .fn()
+        .mockResolvedValueOnce(null)
+        .mockResolvedValueOnce(null),
       create: jest.fn().mockResolvedValue(undefined),
     };
     const edgeModule: TestingModule = await Test.createTestingModule({
@@ -95,9 +99,9 @@ describe('oauthService (integration)', () => {
     }).compile();
     const edgeService = edgeModule.get<AuthService>(AuthService);
 
-    await expect(edgeService.loginOauth(oauthFixture, replyMock)).rejects.toThrow(
-      'User creation failed',
-    );
+    await expect(
+      edgeService.loginOauth(oauthFixture, replyMock),
+    ).rejects.toThrow(new UserCreationFailedException());
   });
 
   it('should login existing oauth user and set cookie', async () => {

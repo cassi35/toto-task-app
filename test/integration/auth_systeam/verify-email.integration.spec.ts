@@ -12,6 +12,8 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { userFixture } from 'test/fixtures/auth';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { userFixtureCreate } from 'test/fixtures/user.fixture';
+import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
+import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
 
 describe('verifyEmailService (integration)', () => {
   let service: AuthService;
@@ -71,7 +73,7 @@ describe('verifyEmailService (integration)', () => {
 
   it('should throw if token not found', async () => {
     await expect(service.verifyEmail('token-not-found')).rejects.toThrow(
-      'Token not found',
+      new TokenNotFoundException(),
     );
   });
 
@@ -85,7 +87,7 @@ describe('verifyEmailService (integration)', () => {
     });
 
     await expect(service.verifyEmail('expired-token')).rejects.toThrow(
-      'Token expired',
+      new TokenExpiredException(),
     );
 
     const userAfter = await userService.findByUserId(createdUser.id);
@@ -95,7 +97,7 @@ describe('verifyEmailService (integration)', () => {
   it('should throw if token is invalid (mismatch)', async () => {
     await createTokenForUser({ token: 'saved-token' });
     await expect(service.verifyEmail('different-token')).rejects.toThrow(
-      'Token not found',
+      new TokenNotFoundException(),
     );
   });
 
