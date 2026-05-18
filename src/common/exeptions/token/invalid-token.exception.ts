@@ -2,6 +2,6 @@ import { HttpException, HttpStatus } from '@nestjs/common';
 
 export default class InvalidTokenException extends HttpException {
   constructor() {
-    super('Invalid token', HttpStatus.BAD_REQUEST);
+    super('Token inválido', HttpStatus.BAD_REQUEST);
   }
 }

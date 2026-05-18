@@ -1,6 +1,7 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { DatabaseService } from '../../database/database.service';
+import EmployeeNotFoundException from 'src/common/exeptions/employees/employee-not-found.exception';
 DatabaseService;
 @Injectable()
 export class EmployeesService {
@@ -26,7 +27,7 @@ export class EmployeesService {
       },
     });
     if (!employee) {
-      throw new NotFoundException('Employee not found');
+      throw new EmployeeNotFoundException();
     }
     return employee;
   }

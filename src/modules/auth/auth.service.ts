@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
@@ -16,6 +16,15 @@ import { EmailService } from '../email/email.service';
 import { OauthUser } from 'src/types';
 import { isEmail } from 'class-validator';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
+import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password.exception';
+import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
+import UserNotActiveException from 'src/common/exeptions/auth/user-not-active.exception';
+import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
+import UserCreationFailedException from 'src/common/exeptions/auth/user-creation-failed.exception';
+import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
+import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
+import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
+import InvalidTokenException from 'src/common/exeptions/auth/invalid-token.exception';
 
 @Injectable()
 export class AuthService {
@@ -63,7 +72,7 @@ export class AuthService {
       });
       const userCreated = await this.userService.finEmail(req.email);
       if (!userCreated) {
-        throw new HttpException('User creation failed', 500);
+        throw new UserCreationFailedException();
       }
 
       const token = await this.genarateJWT(userCreated.id, userCreated.email);
@@ -96,21 +105,21 @@ export class AuthService {
   }
   async login(dto: LoginDto, reply: FastifyReply): Promise<AtuhResponseDto> {
     if (!isEmail(dto.email)) {
-      throw new HttpException('Invalid email', 400);
+      throw new InvalidEmailException();
     }
     if (dto.password.length < 8 || dto.password.length > 20 || !dto.password) {
-      throw new HttpException('Invalid password', 400);
+      throw new InvalidPasswordException();
     }
     const user = await this.userService.finEmail(dto.email);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new UserNotFoundException();
     }
     if (!user.isActive) {
-      throw new HttpException('User not active', 400);
+      throw new UserNotActiveException();
     }
     let isMatch = await bcrypt.compare(dto.password, user.password ?? '');
     if (!isMatch) {
-      throw new HttpException('Invalid credentials', 401);
+      throw new InvalidCredentialsException();
     }
     const token = await this.genarateJWT(user.id, user.email);
     this.setTokenCookie(reply, token);
@@ -124,14 +133,14 @@ export class AuthService {
   }
   async singup(user: SignupDto): Promise<AtuhResponseDto> {
     if (!isEmail(user.email)) {
-      throw new HttpException('Invalid email', 400);
+      throw new InvalidEmailException();
     }
     if (
       user.password.length < 8 ||
       user.password.length > 20 ||
       !user.password
     ) {
-      throw new HttpException('Invalid password', 400);
+      throw new InvalidPasswordException();
     }
     const hashPassword = await this.encode(user.password);
     const token = this.generateToken();
@@ -144,11 +153,11 @@ export class AuthService {
     });
     const userCreated = await this.userService.finEmail(user.email);
     if (!userCreated) {
-      throw new HttpException('User creation failed', 500);
+      throw new UserCreationFailedException();
     }
     const existsToken = await this.tokenService.findByUserId(userCreated.id);
     if (existsToken) {
-      throw new HttpException('Token already exists', 400);
+      throw new TokenAlreadyExistsException();
     }
     await this.emailService.sendEmail(
       userCreated.email,
@@ -179,17 +188,17 @@ export class AuthService {
   async verifyEmail(token: string): Promise<AtuhResponseDto> {
     const tokenExists = await this.tokenService.findByToken(token);
     if (!tokenExists) {
-      throw new HttpException('Token not found', 404);
+      throw new TokenNotFoundException();
     }
     if (tokenExists.expiresAt < new Date()) {
-      throw new HttpException('Token expired', 400);
+      throw new TokenExpiredException();
     }
     if (tokenExists.token != token) {
-      throw new HttpException('Invalid token', 400);
+      throw new InvalidTokenException();
     }
     const user = await this.userService.findByUserId(tokenExists.userId);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new UserNotFoundException();
     }
 
     await this.userService.update(user.id, {
@@ -226,15 +235,15 @@ export class AuthService {
     newPassword: ForgotPasswordDto,
   ): Promise<AtuhResponseDto> {
     if (!isEmail(newPassword.email)) {
-      throw new HttpException('Invalid email', 400);
+      throw new InvalidEmailException();
     }
     const user = await this.userService.finEmail(newPassword.email);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new UserNotFoundException();
     }
     const UserExistsInTokenDb = await this.tokenService.findByUserId(user.id);
     if (UserExistsInTokenDb) {
-      throw new HttpException('token already exists', 400);
+      throw new TokenAlreadyExistsException();
     }
     const tokenVerification = this.generateToken();
     await this.emailService.sendEmail(
@@ -268,17 +277,17 @@ export class AuthService {
       newBodyPassowrd.token,
     );
     if (!tokenExists) {
-      throw new HttpException('Token not found', 404);
+      throw new TokenNotFoundException();
     }
     if (tokenExists.expiresAt < new Date()) {
-      throw new HttpException('Token expired', 400);
+      throw new TokenExpiredException();
     }
     if (tokenExists.token != newBodyPassowrd.token) {
-      throw new HttpException('Invalid token', 400);
+      throw new InvalidTokenException();
     }
     const user = await this.userService.findByUserId(tokenExists.userId);
     if (!user) {
-      throw new HttpException('User not found', 404);
+      throw new UserNotFoundException();
     }
     const hashPassword = await this.encode(newBodyPassowrd.newPassword);
     await this.userService.update(user.id, {

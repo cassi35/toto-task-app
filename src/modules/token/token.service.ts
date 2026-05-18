@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Token, TokenType } from '@prisma/client';
 import { DatabaseService } from '../../database/database.service';
+import InvalidTokenException from 'src/common/exeptions/token/invalid-token.exception';
+import TokenExpiredException from 'src/common/exeptions/token/token-expired.exception';
 @Injectable()
 export class TokenService {
   constructor(private readonly database: DatabaseService) {}
@@ -40,11 +42,11 @@ export class TokenService {
     });
 
     if (!existing || existing.type !== type) {
-      throw new Error('Token inválido');
+      throw new InvalidTokenException();
     }
 
     if (existing.expiresAt < new Date()) {
-      throw new Error('Token expirado');
+      throw new TokenExpiredException();
     }
 
     return existing;
