@@ -4,6 +4,9 @@ export interface JWTUser {
   id: number;
   email: string;
 }
+export interface AuthenticatedRequest extends FastifyRequest {
+  user: JWTUser;
+}
 export type OauthUser = {
   email: string;
   name: string;

@@ -10,6 +10,7 @@ enum AuthRouter {
   MICROSOFT = 'microsoft',
   GOOGLE_CALLBACK = 'google/callback',
   MICROSOFT_CALLBACK = 'microsoft/callback',
+  ME = 'me',
 }
 export default AuthRouter;
 /* 

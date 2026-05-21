@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt';
 import { TokenService } from '../token/token.service';
 import { AtuhResponseDto } from './dto/response/base-response.dto';
 import { EmailService } from '../email/email.service';
-import { OauthUser } from 'src/types';
+import { AuthenticatedRequest, OauthUser } from 'src/types';
 import { isEmail } from 'class-validator';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
 import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password.exception';
@@ -26,6 +26,7 @@ import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.ex
 import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
 import InvalidTokenException from 'src/common/exeptions/auth/invalid-token.exception';
 import UserAlreadyExistsException from 'src/common/exeptions/users/user-already-exists.exception';
+import { MeDto } from './dto/me.dto';
 
 @Injectable()
 export class AuthService {
@@ -38,6 +39,12 @@ export class AuthService {
     // INJETE ASSIM, SEM O 'NEW'
     private readonly emailService: EmailService,
   ) {}
+  async me(req: AuthenticatedRequest): Promise<MeDto> {
+    return {
+      email: req.user.email,
+      id: req.user.id,
+    };
+  }
   async redirect(provider: 'google' | 'microsoft', reply: FastifyReply) {
     let url: string;
     switch (provider) {

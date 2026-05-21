@@ -30,7 +30,7 @@ import { Throttle, InjectThrottlerOptions } from '@nestjs/throttler';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleAuthGuard } from './guards/google.guard';
 import { MicrosoftGuard } from './guards/microsoft.guard';
-import { OauthUser } from 'src/types';
+import { AuthenticatedRequest, OauthUser } from 'src/types';
 import { AtuhResponseDto } from './../auth/dto/response/base-response.dto';
 import { ErrorResonseDto } from '../../common/dto/error-respose.dto';
 import AuthRouter from 'src/common/routes/auth.routes';
@@ -147,7 +147,13 @@ export class AuthController {
   ) {
     return this.authService.loginOauth(req.user, reply);
   }
-
+  @Public()
+  @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @ApiOkResponse({ type: AtuhResponseDto })
+  @Get(AuthRouter.ME)
+  me(@Req() req: AuthenticatedRequest) {
+    return this.authService.me(req);
+  }
   @Public()
   @ApiOkResponse({ type: String })
   @Get('test')
