@@ -4,7 +4,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
 import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
-import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
+import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
 
 import { DatabaseService } from 'src/database/database.service';
 import { AuthService } from 'src/modules/auth/auth.service';

@@ -11,7 +11,7 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { OauthUser } from 'src/types';
 import { replyMock } from 'test/mock/reply.mock';
-import UserCreationFailedException from 'src/common/exeptions/auth/user-creation-failed.exception';
+import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
 
 describe('oauthService (integration)', () => {
   let service: AuthService;

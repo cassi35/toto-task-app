@@ -13,7 +13,7 @@ import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { userFixture } from 'test/fixtures/auth';
 import { userFixtureCreate } from 'test/fixtures/user.fixture';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
-import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
+import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
 import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
 
 describe('forgotPasswordService (integration)', () => {

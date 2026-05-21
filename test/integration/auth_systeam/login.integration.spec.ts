@@ -18,8 +18,8 @@ import {
 } from 'test/fixtures/user.fixture';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
 import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password.exception';
-import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
-import UserNotActiveException from 'src/common/exeptions/auth/user-not-active.exception';
+import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
+import UserNotActiveException from 'src/common/exeptions/users/user-not-active.exception';
 import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
 describe('loginService (integration)', () => {
   let service: AuthService;

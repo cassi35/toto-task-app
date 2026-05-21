@@ -17,14 +17,15 @@ import { OauthUser } from 'src/types';
 import { isEmail } from 'class-validator';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
 import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password.exception';
-import UserNotFoundException from 'src/common/exeptions/auth/user-not-found.exception';
-import UserNotActiveException from 'src/common/exeptions/auth/user-not-active.exception';
+import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
+import UserNotActiveException from 'src/common/exeptions/users/user-not-active.exception';
 import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
-import UserCreationFailedException from 'src/common/exeptions/auth/user-creation-failed.exception';
+import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
 import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
 import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
 import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
 import InvalidTokenException from 'src/common/exeptions/auth/invalid-token.exception';
+import UserAlreadyExistsException from 'src/common/exeptions/users/user-already-exists.exception';
 
 @Injectable()
 export class AuthService {
@@ -142,8 +143,13 @@ export class AuthService {
     ) {
       throw new InvalidPasswordException();
     }
+    const usersExists = await this.userService.finEmail(user.email);
+    if (usersExists) {
+      throw new UserAlreadyExistsException();
+    }
     const hashPassword = await this.encode(user.password);
     const token = this.generateToken();
+
     await this.userService.create({
       email: user.email,
       password: hashPassword,
@@ -154,10 +160,6 @@ export class AuthService {
     const userCreated = await this.userService.finEmail(user.email);
     if (!userCreated) {
       throw new UserCreationFailedException();
-    }
-    const existsToken = await this.tokenService.findByUserId(userCreated.id);
-    if (existsToken) {
-      throw new TokenAlreadyExistsException();
     }
     await this.emailService.sendEmail(
       userCreated.email,
