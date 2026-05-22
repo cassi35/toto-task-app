@@ -11,9 +11,10 @@ import { TokenModule } from '../token/token.module';
 import { AtStrategy } from 'src/common/strategies/at.strategy';
 import { GoogleStrategy } from './stretegies/google.strategy';
 import { MicrosoftStrategy } from './stretegies/microsoft.strategy';
+import { OauthController } from './controllers/oauth2.controller';
 // import { AtStrategy } from 'src/common/strategies/at.strategy'
 @Module({
-  controllers: [AuthController],
+  controllers: [AuthController, OauthController],
   providers: [AuthService, AtStrategy, GoogleStrategy, MicrosoftStrategy],
   imports: [
     MyLoggerModule,
