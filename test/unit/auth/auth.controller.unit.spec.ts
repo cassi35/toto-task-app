@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthController } from 'src/modules/auth/auth.controller';
+import { AuthController } from 'src/modules/auth/controllers/auth.controller';
 import { AuthService } from 'src/modules/auth/auth.service';
 import { authServiceMock } from 'test/mock/services/authService.mock';
 
