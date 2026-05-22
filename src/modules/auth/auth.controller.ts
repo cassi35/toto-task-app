@@ -6,7 +6,6 @@ import {
   Post,
   Query,
   Res,
-  HttpCode,
   UseGuards,
   Req,
   HttpStatus,
@@ -16,7 +15,6 @@ import { MyLoggerService } from 'src/my-logger/my-logger.service';
 import {
   ApiOkResponse,
   ApiBadRequestResponse,
-  ApiCreatedResponse,
   ApiFoundResponse,
   ApiQuery,
 } from '@nestjs/swagger';
@@ -25,24 +23,23 @@ import { LoginDto } from './dto/login.dto';
 import { SignupDto } from './dto/signup.dto';
 import { ForgotPasswordDto } from './dto/forgot-password.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
-import { Throttle, InjectThrottlerOptions } from '@nestjs/throttler';
+import { Throttle } from '@nestjs/throttler';
 
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { GoogleAuthGuard } from './guards/google.guard';
 import { MicrosoftGuard } from './guards/microsoft.guard';
 import { AuthenticatedRequest, OauthUser } from 'src/types';
-import { AtuhResponseDto } from './../auth/dto/response/base-response.dto';
 import { ErrorResonseDto } from '../../common/dto/error-respose.dto';
 import AuthRouter from 'src/common/routes/auth.routes';
+import {
+  PrivateRouteAuth,
+  PublicAuthRoute,
+} from 'src/common/decorators/public-router-auth.decorator';
 @Controller(AuthRouter.BASE)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   private readonly logger = new MyLoggerService(AuthController.name);
-  @Public()
-  @Throttle({ default: { limit: 5, ttl: 60000 } }) // Máximo 5 tentativas por minuto
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @HttpCode(HttpStatus.OK)
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @Post('login')
   login(
     @Body() loginDto: LoginDto,
@@ -50,18 +47,12 @@ export class AuthController {
   ) {
     return this.authService.login(loginDto, reply);
   }
-  @Public()
-  @Throttle({ default: { limit: 3, ttl: 60000 } })
-  @ApiCreatedResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @HttpCode(HttpStatus.CREATED)
+  @PublicAuthRoute(5, 60000, HttpStatus.CREATED)
   @Post(AuthRouter.SIGNUP)
   signup(@Body() signupDto: SignupDto) {
     return this.authService.singup(signupDto);
   }
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @HttpCode(HttpStatus.OK)
+  @PrivateRouteAuth(HttpStatus.OK)
   @Post('logout')
   logout(
     @Res({ passthrough: true }) reply: FastifyReply,
@@ -70,33 +61,22 @@ export class AuthController {
     return this.authService.logout(reply, req);
   }
 
-  @Public()
-  @Throttle({ default: { limit: 3, ttl: 3600000 } }) // Máximo 3 pedidos de recuperação por hora
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @HttpCode(HttpStatus.OK)
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @Post(AuthRouter.FORGOT_PASSWORD)
   forgotPassword(@Body() forgotPasswordDto: ForgotPasswordDto) {
     return this.authService.forgotPassword(forgotPasswordDto);
   }
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @HttpCode(HttpStatus.OK)
-  @Post(AuthRouter.RESET_PASSWORD)
+  @PrivateRouteAuth(HttpStatus.OK)
   resetPassword(@Body() resetPasswordDto: ResetPasswordDto) {
     return this.authService.resetPassoword(resetPasswordDto);
   }
-  @Public()
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @ApiQuery({
     name: 'token',
     type: String,
     required: true,
     description: 'Verification token',
   })
-  @HttpCode(HttpStatus.OK)
   @Get(AuthRouter.VERIFY_EMAIL)
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
@@ -117,10 +97,7 @@ export class AuthController {
     return this.authService.redirect('google', reply);
   }
 
-  @Public()
-  @Get(AuthRouter.GOOGLE_CALLBACK)
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @UseGuards(GoogleAuthGuard)
   googleAuthCallback(
     @Req() req: FastifyRequest & { user: OauthUser },
@@ -129,16 +106,12 @@ export class AuthController {
     return this.authService.loginOauth(req.user, reply);
   }
 
-  @Public()
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @Get(AuthRouter.MICROSOFT)
   async microsoftAuth(@Res({ passthrough: true }) reply: FastifyReply) {
     return this.authService.redirect('microsoft', reply);
   }
-  @Public()
-  @ApiOkResponse({ type: AtuhResponseDto })
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @Get(AuthRouter.MICROSOFT_CALLBACK)
   @UseGuards(MicrosoftGuard)
   microsoftAuthCallback(
@@ -147,9 +120,7 @@ export class AuthController {
   ) {
     return this.authService.loginOauth(req.user, reply);
   }
-  @Public()
-  @ApiBadRequestResponse({ type: ErrorResonseDto })
-  @ApiOkResponse({ type: AtuhResponseDto })
+  @PublicAuthRoute(5, 60000, HttpStatus.OK)
   @Get(AuthRouter.ME)
   me(@Req() req: AuthenticatedRequest) {
     return this.authService.me(req);
