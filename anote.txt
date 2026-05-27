@@ -42,7 +42,7 @@ npm i -D @types/cookie-parser --legacy-peer-deps ou  npm i @fastify/cookie --leg
  npm i @faker-js/faker
  npm init @eslint/config@latest
 npm install @modelcontextprotocol/sdk @rekog/mcp-nest zod
-
+npm install --save @nestjs/bullmq bullmq
  desativar   // eslintPluginPrettierRecommended,
 nest g module my-logger
  @Module({
