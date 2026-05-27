@@ -22,6 +22,9 @@ export const envSchema = z.object({
   MICROSOFT_LOGIN: z.string(),
   FRONTEND_URL_DEV: z.string(),
   RENDER_BASE_URL: z.string(),
+  REDIS: z.string(),
+  UPSTASH_REDIS_REST_URL: z.string(),
+  UPSTASH_REDIS_REST_TOKEN: z.string(),
 });
 export type envSchema = z.infer<typeof envSchema>;
 // 2. Faz o Parse (Validação)
