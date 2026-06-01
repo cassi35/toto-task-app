@@ -19,9 +19,12 @@ import { EmailModule } from './modules/email/email.module';
 import { TokenService } from './modules/token/token.service';
 import { TokenModule } from './modules/token/token.module';
 import { ScheduleModule } from '@nestjs/schedule';
-
+import { BullModule } from '@nestjs/bullmq';
 @Module({
   imports: [
+    BullModule.forRoot({
+      connection: { url: process.env.REDIS },
+    }),
     ConfigModule.forRoot({
       isGlobal: true,
     }),

@@ -13,9 +13,19 @@ import { GoogleStrategy } from './stretegies/google.strategy';
 import { MicrosoftStrategy } from './stretegies/microsoft.strategy';
 import { OauthController } from './controllers/oauth2.controller';
 // import { AtStrategy } from 'src/common/strategies/at.strategy'
+import { QueueModule } from './queue/queue.module';
+import { TokenService } from './services/token/token.service';
+import { EmailService } from './services/email/email.service';
 @Module({
   controllers: [AuthController, OauthController],
-  providers: [AuthService, AtStrategy, GoogleStrategy, MicrosoftStrategy],
+  providers: [
+    AuthService,
+    AtStrategy,
+    GoogleStrategy,
+    MicrosoftStrategy,
+    TokenService,
+    EmailService,
+  ],
   imports: [
     MyLoggerModule,
     UsersModule,
@@ -24,6 +34,7 @@ import { OauthController } from './controllers/oauth2.controller';
     UsersModule,
     EmailModule,
     TokenModule,
+    QueueModule,
   ],
 })
 export class AuthModule {}

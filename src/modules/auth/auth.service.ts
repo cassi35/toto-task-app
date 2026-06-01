@@ -27,10 +27,14 @@ import TokenExpiredException from 'src/common/exeptions/auth/token-expired.excep
 import InvalidTokenException from 'src/common/exeptions/auth/invalid-token.exception';
 import UserAlreadyExistsException from 'src/common/exeptions/users/user-already-exists.exception';
 import { MeDto } from './dto/me.dto';
+import { InjectQueue } from '@nestjs/bullmq';
+import { Queue } from 'bullmq';
+import { EmailJob } from '../email/types/email.types';
 
 @Injectable()
 export class AuthService {
   constructor(
+    @InjectQueue('email') private readonly emailQueue: Queue<EmailJob>,
     private databaseService: DatabaseService,
     private logger: MyLoggerService,
     private jwtService: JwtService,
@@ -155,7 +159,6 @@ export class AuthService {
       throw new UserAlreadyExistsException();
     }
     const hashPassword = await this.encode(user.password);
-    const token = this.generateToken();
 
     await this.userService.create({
       email: user.email,
@@ -168,17 +171,7 @@ export class AuthService {
     if (!userCreated) {
       throw new UserCreationFailedException();
     }
-    await this.emailService.sendEmail(
-      userCreated.email,
-      'verification token',
-      'sendtoken',
-      {
-        name: userCreated.email,
-        verificationUrl: `${process.env.RENDER_BASE_URL}/api/auth/verify-email?token=${token}`,
-        token,
-        expiresIn: '10',
-      },
-    );
+    const token = this.generateToken();
     const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
     await this.tokenService.create(
       token,
@@ -186,6 +179,14 @@ export class AuthService {
       'REFRESH' as any,
       fiveMinutesFromNow,
     );
+
+    await this.emailQueue.add('process', {
+      type: 'sendtoken',
+      data: {
+        email: user.email,
+        token: token,
+      },
+    });
     return {
       message: 'User created successfully',
       statusCode: HttpStatus.CREATED,
@@ -196,6 +197,7 @@ export class AuthService {
 
   async verifyEmail(token: string): Promise<AtuhResponseDto> {
     const tokenExists = await this.tokenService.findByToken(token);
+
     if (!tokenExists) {
       throw new TokenNotFoundException();
     }

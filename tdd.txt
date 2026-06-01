@@ -1,0 +1,33 @@
+TDD 
+TDD (Test-Driven Development, ou Desenvolvimento Orientado a Testes)
+ é uma técnica de engenharia de software em que os testes automatizados 
+ são escritos antes mesmo do código de produção. O foco é garantir 
+ um design de código simples, modular e sem erro
+
+ red --> escreve teste para nova funcionalidade ou requisito codigo nao foi escrito 
+ green --> esrceve codigo de producao minima simples 
+ refactor --> revise limpe o codigo 
+ emova duplicações, garantindo que o teste continue passando (verde)
+ -----------------
+ custo de testar depois é um problema pra ficar refazendo quando testa antes nao precisa
+ ficar recodando toda hora
+ TESTES PRECISAM QUEBRAR PRIMEIRO ---> REFATORA ---> FICA VERDE
+
+ AONDE FAZER: TESTES ESPECIFICOS QUE NAO SABE COMO FAZER 
+ ----------------------------------------------
+ testes unitarios--> foca no codigo fonte (executam muito rapdio = para dev )
+ intergacao ---> integracao entre essas unidades (foca a integridade do codigo)
+teste funcional --> simula utlizacao do usuario (cypress , botao ) ==> dentro da minha rede 
+Testes Não FuncionaisAvaliam características operacionais e a qualidade geral do software.
+
+Teste de Desempenho e Carga: Avalia a velocidade, estabilidade e escalabilidade 
+do sistema sob condições normais e sob picos de acesso, identificando gargalos.
+
+Teste de Estresse (Stress Test): Excede intencionalmente os limites operacionais
+ do sistema para verificar como ele se comporta e falha sob condições extremas.
+
+Teste de Segurança: Valida se o sistema está protegido contra invasões, vazamentos 
+de dados ou outras vulnerabilidades e ameaças maliciosas.
+
+Teste de Usabilidade: Avalia a facilidade de uso, a eficiência e a experiência geral
+ do usuário ao interagir com o sistema
