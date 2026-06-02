@@ -15,7 +15,6 @@ import { OauthController } from './controllers/oauth2.controller';
 // import { AtStrategy } from 'src/common/strategies/at.strategy'
 import { QueueModule } from './queue/queue.module';
 import { TokenService } from './services/token/token.service';
-import { EmailService } from './services/email/email.service';
 @Module({
   controllers: [AuthController, OauthController],
   providers: [
@@ -24,7 +23,6 @@ import { EmailService } from './services/email/email.service';
     GoogleStrategy,
     MicrosoftStrategy,
     TokenService,
-    EmailService,
   ],
   imports: [
     MyLoggerModule,

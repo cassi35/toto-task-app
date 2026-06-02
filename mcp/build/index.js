@@ -85,6 +85,7 @@ server.tool('create_exception', 'create a new exception in the src', {
             const filePath = `../src/common/exeptions/${errorCase.name}.exception.ts`;
             const exists = fsSync.existsSync(filePath);
             if (exists) {
+                console.error('exception already exists');
                 continue;
             }
             const template = `

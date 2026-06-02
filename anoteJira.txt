@@ -1,1 +1,1 @@
-this is a tetst connctor
+this is a test connector

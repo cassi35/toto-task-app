@@ -18,9 +18,9 @@ class UserValidatorService {
 }
 class UserValidator implements UserValidatorProtocol {
   private userData: User | null = null;
-  private user: User | null = null;
+  private user: User | CreateUserDto | null = null;
   constructor(
-    user: User,
+    user: User | CreateUserDto,
     private userService: UsersService,
   ) {
     this.user = user;
