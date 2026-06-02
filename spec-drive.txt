@@ -1,0 +1,30 @@
+quando tem uma funcionlidade que impacta em varios modulos as pessaos fazem 
+criam em partes pequenas e geram um plano apaprtir do prd 
+deixar a janelade contexto em 200 mil tokens
+
+
+ciclo de desenovlvimento 
+1- janela de prompt 
+2- arquivos nescesarios
+agents.md
+mcp 
+skills
+
+RBI (para nao estourar janela de contexto)
+RESEACH 
+pesquisa , estrtura projeto , analise de negocio , skills, mcp , scripts localis para pocs 
+ajustes de prompt e contexto para ao agente
+PLAN 
+salva tudo em makrdown guia a spec 
+IMPLMENT 
+implementa baseado na pesquisa anterior 
+--------------------------------
+https://skills.rest/skill/tlc-spec-driven padrao de spec
+spec/features
+recomendations
+   spec.md --> explica o problema , user history , gaols , contexto eral 
+   task.md ----> cada tarefa integracada , dizer aonde vai ser feito e o que vai ser feito 
+    prd.md
+   disgn.md --> decisoes importantes do projeto diagma , arquitetura , solucao , reusados 
+    decisoes importantes
+https://www.youtube.com/watch?v=YFDp-smGYqQ&t=260s

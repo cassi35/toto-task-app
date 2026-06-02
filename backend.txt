@@ -1,0 +1,45 @@
+Compilação vs. Interpretação
+Compiladores: Transformam o código-fonte em binários nativos, 
+podendo ser linkados estaticamente (código da biblioteca incluso 
+no binário, maior tamanho) ou dinamicamente (bibliotecas carregadas
+ em tempo de execução, como .so ou .dll).
+
+Interpretadores: Lêem o código fonte em tempo de execução e o traduzem.
+ Ferramentas como o parseamento criam árvores de sintaxe abstrata (AST) para execução direta.
+
+Processos e Paralelismo:
+Processos e Fork 
+O sistema operacional gerencia a execução através de processos isolados. O comando fork cria uma cópia 
+do processo atual com eficiência de memória (Copy-on-Write), sendo a base de servidores web clássicos 
+como o Apache.
+
+Threads e Concorrência
+Diferente dos processos, threads compartilham a mesma memória do processo pai, 
+exigindo mecanismos de controle como locks para evitar corrupção de dados 
+(concorrência segura ou thread-safe).
+
+Arquiteturas de Execução:
+ Funcionam como um intermediário entre o software e o sistema operacional.
+  O código é compilado em bytecode (uma representação intermediária),
+   que é executado por uma máquina virtual (JVM para Java, CLR para .NET).
+
+Compilação JIT (Just-In-Time) 
+Técnica onde o código é otimizado e compilado para binário nativo em tempo
+ de execução, equilibrando a facilidade de linguagens interpretadas 
+ com a performance de linguagens compiladas.
+ ----------------------------------------------------------------------
+ concorrencia e paralelismo 
+ tarefa a e b 
+ tarefas que sobreopem 
+ taskA  |
+ taskB  | 
+ taskA  |
+        \/
+paralelismo sao as tarefas simultaneas
+taskA   taskB
+taskA   taskB  
+
+async
+tafraA  --> calcula relatorio 
+meio: faz alguma coisa que nao tem nada haver com calcular relatorio
+retona 200
