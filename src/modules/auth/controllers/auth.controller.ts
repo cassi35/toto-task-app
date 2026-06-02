@@ -28,7 +28,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
   private readonly logger = new MyLoggerService(AuthController.name);
   @PublicAuthRoute(5, 60000, HttpStatus.OK)
-  @Post('login')
+  @Post(AuthRouter.LOGIN)
   login(
     @Body() loginDto: LoginDto,
     @Res({ passthrough: true }) reply: FastifyReply,
@@ -41,7 +41,7 @@ export class AuthController {
     return this.authService.singup(signupDto);
   }
   @PrivateRouteAuth(HttpStatus.OK)
-  @Post('logout')
+  @Post(AuthRouter.LOGOUT)
   logout(
     @Res({ passthrough: true }) reply: FastifyReply,
     @Req() req: FastifyRequest,
