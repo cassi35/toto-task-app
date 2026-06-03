@@ -5,12 +5,14 @@ import TokenExpiredException from 'src/common/exeptions/token/token-expired.exce
 import InvalidTokenException from 'src/common/exeptions/token/invalid-token.exception';
 import { TokenService } from 'src/modules/token/token.service';
 
-// 1. Interface que o serviço retorna. Só permite chamar o 'exists'.
 interface TokenInitialChain {
   exists(): Promise<TokenValidationChain>;
 }
 
-// 2. Interface com os métodos liberados APÓS o 'exists' ter rodado
+interface TokenByUserInitialChain {
+  existsByUserId(): Promise<TokenValidationChain>;
+}
+
 export interface TokenValidationChain {
   notExpired(): this;
   matchesToken(): this;
@@ -19,6 +21,7 @@ export interface TokenValidationChain {
 
 interface TokenValidatorProtocol {
   validate(token: string): TokenInitialChain;
+  validateByUserId(userId: number): TokenByUserInitialChain;
 }
 
 @Injectable()
@@ -26,28 +29,42 @@ export class TokenValidatorService implements TokenValidatorProtocol {
   constructor(private tokenService: TokenService) {}
 
   validate(token: string): TokenInitialChain {
-    // Retorna a instância tipada estritamente como TokenInitialChain
-    return new TokenValidationChainInternal(token, this.tokenService);
+    return new TokenValidationChainInternal(this.tokenService, token);
+  }
+
+  validateByUserId(userId: number): TokenByUserInitialChain {
+    return new TokenValidationChainInternal(
+      this.tokenService,
+      undefined,
+      userId,
+    );
   }
 }
 
-// Classe interna que implementa ambas as etapas do fluxo
 class TokenValidationChainInternal
-  implements TokenInitialChain, TokenValidationChain
+  implements TokenInitialChain, TokenByUserInitialChain, TokenValidationChain
 {
   private tokenData: Token | null = null;
 
   constructor(
-    private token: string,
     private tokenService: TokenService,
+    private token?: string,
+    private userId?: number,
   ) {}
 
-  // Obrigatoriamente o primeiro método a ser chamado externo ao serviço
   async exists(): Promise<TokenValidationChain> {
-    this.tokenData = await this.tokenService.findByToken(this.token);
-    if (!this.tokenData) throw new TokenNotFoundException();
+    this.tokenData = await this.tokenService.findByToken(this.token!);
+    if (!this.tokenData) {
+      throw new TokenNotFoundException();
+    }
+    return this;
+  }
 
-    // Retorna a si mesmo, mas mascarado como a interface que libera as próximas funções
+  async existsByUserId(): Promise<TokenValidationChain> {
+    this.tokenData = await this.tokenService.findByUserId(this.userId!);
+    if (!this.tokenData) {
+      throw new TokenNotFoundException();
+    }
     return this;
   }
 

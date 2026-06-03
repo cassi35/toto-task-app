@@ -8,7 +8,6 @@ import { ResetPasswordDto } from './dto/reset-password.dto';
 import { DatabaseService } from 'src/database/database.service';
 import { FastifyReply, FastifyRequest } from 'fastify';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
-import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { TokenService } from '../token/token.service';
 import { AtuhResponseDto } from './dto/response/base-response.dto';
@@ -21,15 +20,13 @@ import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exc
 import UserNotActiveException from 'src/common/exeptions/users/user-not-active.exception';
 import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
 import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
-import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
-import TokenNotFoundException from 'src/common/exeptions/auth/token-not-found.exception';
-import TokenExpiredException from 'src/common/exeptions/auth/token-expired.exception';
-import InvalidTokenException from 'src/common/exeptions/auth/invalid-token.exception';
 import UserAlreadyExistsException from 'src/common/exeptions/users/user-already-exists.exception';
 import { MeDto } from './dto/me.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { EmailJob } from '../email/types/email.types';
+import { TokenServiceValidator } from './services/token/token.service';
+import { CookieService } from './services/cookie/cookie.service';
 
 @Injectable()
 export class AuthService {
@@ -37,9 +34,10 @@ export class AuthService {
     @InjectQueue('email') private readonly emailQueue: Queue<EmailJob>,
     private databaseService: DatabaseService,
     private logger: MyLoggerService,
-    private jwtService: JwtService,
     private userService: UsersService,
     private tokenService: TokenService,
+    private cookieService: CookieService,
+    private tokenValidator: TokenServiceValidator,
     // INJETE ASSIM, SEM O 'NEW'
     private readonly emailService: EmailService,
   ) {}
@@ -87,8 +85,11 @@ export class AuthService {
         throw new UserCreationFailedException();
       }
 
-      const token = await this.genarateJWT(userCreated.id, userCreated.email);
-      this.setTokenCookie(reply, token);
+      const token = await this.cookieService.genarateJWT(
+        userCreated.id,
+        userCreated.email,
+      );
+      this.cookieService.setTokenCookie(reply, token);
       await this.emailService.sendEmail(
         userCreated.email,
         'welcome to website',
@@ -105,8 +106,8 @@ export class AuthService {
         verified: userCreated.isActive,
       };
     }
-    const token = await this.genarateJWT(user.id, user.email);
-    this.setTokenCookie(reply, token);
+    const token = await this.cookieService.genarateJWT(user.id, user.email);
+    this.cookieService.setTokenCookie(reply, token);
     return {
       success: true,
       statusCode: 200,
@@ -133,8 +134,8 @@ export class AuthService {
     if (!isMatch) {
       throw new InvalidCredentialsException();
     }
-    const token = await this.genarateJWT(user.id, user.email);
-    this.setTokenCookie(reply, token);
+    const token = await this.cookieService.genarateJWT(user.id, user.email);
+    this.cookieService.setTokenCookie(reply, token);
     return {
       success: true,
       statusCode: 200,
@@ -158,7 +159,7 @@ export class AuthService {
     if (usersExists) {
       throw new UserAlreadyExistsException();
     }
-    const hashPassword = await this.encode(user.password);
+    const hashPassword = await this.cookieService.encode(user.password);
 
     await this.userService.create({
       email: user.email,
@@ -171,7 +172,7 @@ export class AuthService {
     if (!userCreated) {
       throw new UserCreationFailedException();
     }
-    const token = this.generateToken();
+    const token = this.cookieService.generateToken();
     const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
     await this.tokenService.create(
       token,
@@ -196,17 +197,9 @@ export class AuthService {
   }
 
   async verifyEmail(token: string): Promise<AtuhResponseDto> {
-    const tokenExists = await this.tokenService.findByToken(token);
-
-    if (!tokenExists) {
-      throw new TokenNotFoundException();
-    }
-    if (tokenExists.expiresAt < new Date()) {
-      throw new TokenExpiredException();
-    }
-    if (tokenExists.token != token) {
-      throw new InvalidTokenException();
-    }
+    const tokenExists = (
+      await this.tokenValidator.validateFullToken(token)
+    ).get();
     const user = await this.userService.findByUserId(tokenExists.userId);
     if (!user) {
       throw new UserNotFoundException();
@@ -235,7 +228,7 @@ export class AuthService {
     reply: FastifyReply,
     req: FastifyRequest,
   ): Promise<AtuhResponseDto> {
-    this.clearCookie(reply, req);
+    this.cookieService.clearCookie(reply, req);
     return {
       message: 'Logout successful',
       statusCode: HttpStatus.OK,
@@ -252,11 +245,8 @@ export class AuthService {
     if (!user) {
       throw new UserNotFoundException();
     }
-    const UserExistsInTokenDb = await this.tokenService.findByUserId(user.id);
-    if (UserExistsInTokenDb) {
-      throw new TokenAlreadyExistsException();
-    }
-    const tokenVerification = this.generateToken();
+    await this.tokenValidator.ensureUserDoesNotHaveToken(user.id);
+    const tokenVerification = this.cookieService.generateToken();
     await this.emailService.sendEmail(
       newPassword.email,
       'forgot password',
@@ -281,26 +271,20 @@ export class AuthService {
       success: true,
     };
   }
+
   async resetPassoword(
     newBodyPassowrd: ResetPasswordDto,
   ): Promise<AtuhResponseDto> {
-    const tokenExists = await this.tokenService.findByToken(
-      newBodyPassowrd.token,
-    );
-    if (!tokenExists) {
-      throw new TokenNotFoundException();
-    }
-    if (tokenExists.expiresAt < new Date()) {
-      throw new TokenExpiredException();
-    }
-    if (tokenExists.token != newBodyPassowrd.token) {
-      throw new InvalidTokenException();
-    }
+    const tokenExists = (
+      await this.tokenValidator.validateFullToken(newBodyPassowrd.token)
+    ).get();
     const user = await this.userService.findByUserId(tokenExists.userId);
     if (!user) {
       throw new UserNotFoundException();
     }
-    const hashPassword = await this.encode(newBodyPassowrd.newPassword);
+    const hashPassword = await this.cookieService.encode(
+      newBodyPassowrd.newPassword,
+    );
     await this.userService.update(user.id, {
       password: hashPassword,
     });
@@ -311,6 +295,8 @@ export class AuthService {
       success: true,
     };
   }
+}
+/* 
   private generateToken(): string {
     const verificationToken =
       Math.random().toString(36).substring(2, 15) +
@@ -344,4 +330,4 @@ export class AuthService {
     const salt = await bcrypt.genSalt(10);
     return bcrypt.hash(passoword, salt);
   }
-}
+*/
