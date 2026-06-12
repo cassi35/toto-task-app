@@ -17,11 +17,11 @@ import { QueueModule } from './queue/queue.module';
 
 import { EmailService } from '../email/email.service';
 import { TokenService } from '../token/token.service';
-import { TokenServiceValidator } from './services/token/token.service';
-import { CookieService } from './services/cookie/cookie.service';
-import { QueueService } from './services/queue/queue.service';
+import { TokenServiceValidator } from './validators/token.service';
+import { CookieService } from './validators/cookie.service';
+import { QueueService } from './validators/queue.service';
 import UserValidatorBuilder from 'src/shared/builders/user.builder';
-import { UserValidatorService } from './services/user/user.service';
+import { UserValidatorService } from './validators/user.service';
 @Module({
   controllers: [AuthController, OauthController],
   providers: [

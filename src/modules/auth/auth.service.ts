@@ -16,9 +16,9 @@ import { MeDto } from './dto/me.dto';
 import { InjectQueue } from '@nestjs/bullmq';
 import { Queue } from 'bullmq';
 import { EmailJob } from '../email/types/email.types';
-import { TokenServiceValidator } from './services/token/token.service';
-import { CookieService } from './services/cookie/cookie.service';
-import { UserValidatorService } from './services/user/user.service';
+import { TokenServiceValidator } from './validators/token.service';
+import { CookieService } from './validators/cookie.service';
+import { UserValidatorService } from './validators/user.service';
 
 @Injectable()
 export class AuthService {
