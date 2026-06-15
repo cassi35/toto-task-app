@@ -23,7 +23,12 @@ import { BullModule } from '@nestjs/bullmq';
 @Module({
   imports: [
     BullModule.forRoot({
-      connection: { url: process.env.REDIS },
+      connection: {
+        url: process.env.REDIS,
+        tls: {},
+        maxRetriesPerRequest: null,
+        enableReadyCheck: false,
+      },
     }),
     ConfigModule.forRoot({
       isGlobal: true,

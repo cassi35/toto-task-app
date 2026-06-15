@@ -76,9 +76,6 @@ export class AuthController {
   me(@Req() req: AuthenticatedRequest) {
     return this.authService.me(req);
   }
-  @PrivateRouteAuth(HttpStatus.OK)
-  @Get(AuthRouter.ME)
-  @ApiOkResponse({ type: String })
   @Get('test')
   test() {
     return 'ok';

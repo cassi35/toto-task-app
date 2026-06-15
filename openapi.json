@@ -497,7 +497,7 @@
           }
         },
         "responses": {
-          "201": {
+          "200": {
             "description": "",
             "content": {
               "application/json": {
@@ -677,11 +677,49 @@
         ]
       }
     },
-    "/api/auth/google": {
+    "/api/auth/me": {
       "get": {
-        "operationId": "AuthController_googleAuth",
+        "operationId": "AuthController_me",
         "parameters": [],
         "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/test": {
+      "get": {
+        "operationId": "AuthController_test",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "tags": [
+          "Auth"
+        ]
+      }
+    },
+    "/api/auth/google": {
+      "get": {
+        "operationId": "OauthController_googleAuth",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AtuhResponseDto"
+                }
+              }
+            }
+          },
           "302": {
             "description": "Redirect to provider",
             "content": {
@@ -705,13 +743,13 @@
           }
         },
         "tags": [
-          "Auth"
+          "Oauth"
         ]
       }
     },
     "/api/auth/google/callback": {
       "get": {
-        "operationId": "AuthController_googleAuthCallback",
+        "operationId": "OauthController_googleAuthCallback",
         "parameters": [],
         "responses": {
           "200": {
@@ -736,13 +774,13 @@
           }
         },
         "tags": [
-          "Auth"
+          "Oauth"
         ]
       }
     },
     "/api/auth/microsoft": {
       "get": {
-        "operationId": "AuthController_microsoftAuth",
+        "operationId": "OauthController_microsoftAuth",
         "parameters": [],
         "responses": {
           "200": {
@@ -767,13 +805,13 @@
           }
         },
         "tags": [
-          "Auth"
+          "Oauth"
         ]
       }
     },
     "/api/auth/microsoft/callback": {
       "get": {
-        "operationId": "AuthController_microsoftAuthCallback",
+        "operationId": "OauthController_microsoftAuthCallback",
         "parameters": [],
         "responses": {
           "200": {
@@ -798,59 +836,7 @@
           }
         },
         "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/api/auth/me": {
-      "get": {
-        "operationId": "AuthController_me",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/AtuhResponseDto"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ErrorResonseDto"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Auth"
-        ]
-      }
-    },
-    "/api/auth/test": {
-      "get": {
-        "operationId": "AuthController_test",
-        "parameters": [],
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                }
-              }
-            }
-          }
-        },
-        "tags": [
-          "Auth"
+          "Oauth"
         ]
       }
     }

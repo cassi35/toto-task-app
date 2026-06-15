@@ -31,7 +31,6 @@ export class AuthService {
     private cookieService: CookieService,
     private tokenValidator: TokenServiceValidator,
     private userValidator: UserValidatorService,
-    private readonly emailService: EmailService,
   ) {}
   async me(req: AuthenticatedRequest): Promise<MeDto> {
     return {
@@ -81,12 +80,18 @@ export class AuthService {
         userCreated.email,
       );
       this.cookieService.setTokenCookie(reply, token);
-      await this.emailService.sendEmail(
-        userCreated.email,
-        'welcome to website',
-        'welcome',
+      await this.emailQueue.add(
+        'process',
         {
-          name: userCreated.email,
+          type: 'welcome',
+          data: {
+            email: userCreated.email,
+          },
+        },
+        {
+          attempts: 3,
+          removeOnFail: true,
+          removeOnComplete: true,
         },
       );
       return {
@@ -147,13 +152,21 @@ export class AuthService {
       fiveMinutesFromNow,
     );
 
-    await this.emailQueue.add('process', {
-      type: 'sendtoken',
-      data: {
-        email: user.email,
-        token: token,
+    await this.emailQueue.add(
+      'process',
+      {
+        type: 'sendtoken',
+        data: {
+          email: user.email,
+          token: token,
+        },
       },
-    });
+      {
+        attempts: 3,
+        removeOnFail: true,
+        removeOnComplete: true,
+      },
+    );
     return {
       message: 'User created successfully',
       statusCode: HttpStatus.CREATED,
@@ -174,12 +187,18 @@ export class AuthService {
       isActive: true,
     });
     await this.tokenService.consumeToken(token);
-    await this.emailService.sendEmail(
-      user.email,
-      'welcome to website',
-      'welcome',
+    await this.emailQueue.add(
+      'process',
       {
-        name: user.email,
+        type: 'welcome',
+        data: {
+          email: user.email,
+        },
+      },
+      {
+        attempts: 3,
+        removeOnFail: true,
+        removeOnComplete: true,
       },
     );
     return {
@@ -209,15 +228,19 @@ export class AuthService {
     ).get();
     await this.tokenValidator.ensureUserDoesNotHaveToken(user.id);
     const tokenVerification = this.cookieService.generateToken();
-    await this.emailService.sendEmail(
-      newPassword.email,
-      'forgot password',
-      'sendForgotPassowrdToken',
+    await this.emailQueue.add(
+      'process',
       {
-        name: newPassword.email,
-        resetUrl: `${process.env.RENDER_BASE_URL}/resetpassoword`,
-        token: tokenVerification,
-        expiresIn: '10',
+        type: 'sendForgotPassowrdToken',
+        data: {
+          email: newPassword.email,
+          token: tokenVerification,
+        },
+      },
+      {
+        attempts: 3,
+        removeOnFail: true,
+        removeOnComplete: true,
       },
     );
     const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);

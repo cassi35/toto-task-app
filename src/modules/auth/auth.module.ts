@@ -22,6 +22,7 @@ import { CookieService } from './validators/cookie.service';
 import { QueueService } from './validators/queue.service';
 import UserValidatorBuilder from 'src/shared/builders/user.builder';
 import { UserValidatorService } from './validators/user.service';
+import TokenValidatorService from 'src/shared/builders/token.builder';
 @Module({
   controllers: [AuthController, OauthController],
   providers: [
@@ -36,6 +37,7 @@ import { UserValidatorService } from './validators/user.service';
     QueueService,
     UserValidatorBuilder,
     UserValidatorService,
+    TokenValidatorService,
   ],
   imports: [
     MyLoggerModule,
