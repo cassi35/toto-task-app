@@ -10,6 +10,13 @@
   "transform": {
     "^.+\\.(t|j)s$": "ts-jest"
   },
+  "globals": {
+    "ts-jest": {
+      "tsconfig": {
+        "esModuleInterop": false
+      }
+    }
+  },
   "setupFilesAfterEnv": ["<rootDir>/test/setup.ts"],
   "testTimeout": 60000,
   "maxWorkers": 1,

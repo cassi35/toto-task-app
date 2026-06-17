@@ -21,6 +21,12 @@ import InvalidPasswordException from 'src/common/exeptions/auth/invalid-password
 import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
 import UserNotActiveException from 'src/common/exeptions/users/user-not-active.exception';
 import InvalidCredentialsException from 'src/common/exeptions/auth/invalid-credentials.exception';
+import { BullModule } from '@nestjs/bullmq';
+import { CookieService } from 'src/modules/auth/validators/cookie.service';
+import { QueueService } from 'src/modules/auth/validators/queue.service';
+import { TokenServiceValidator } from 'src/modules/auth/validators/token.service';
+import UserValidatorService from 'src/shared/builders/user.builder';
+import TokenValidatorService from 'src/shared/builders/token.builder';
 describe('loginService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
@@ -28,7 +34,14 @@ describe('loginService (integration)', () => {
   let tokenService: TokenService;
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [AuthService],
+      providers: [
+        AuthService,
+        CookieService,
+        QueueService,
+        TokenServiceValidator,
+        UserValidatorService,
+        TokenValidatorService,
+      ],
       imports: [
         MyLoggerModule,
         DatabaseModule,
@@ -36,6 +49,17 @@ describe('loginService (integration)', () => {
         TokenModule,
         EmailModule,
         JwtModule.register({ secret: process.env.JWT_SECRET }),
+        BullModule.forRoot({
+          connection: {
+            url: process.env.REDIS,
+            tls: {},
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          },
+        }),
+        BullModule.registerQueue({
+          name: 'email',
+        }),
       ],
     }).compile();
 
