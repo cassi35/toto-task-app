@@ -17,4 +17,5 @@ export function setupSwagger(app: INestApplication): void {
   });
   fs.writeFileSync('./openapi.json', JSON.stringify(document, null, 2));
   console.log('Swagger disponível em: http://localhost:8000/swagger');
+  console.log(process.env.PORT);
 }
