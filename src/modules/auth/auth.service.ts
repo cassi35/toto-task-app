@@ -165,6 +165,10 @@ export class AuthService {
         attempts: 3,
         removeOnFail: true,
         removeOnComplete: true,
+        backoff: {
+          type: 'exponential', // a cada falha, dobra o tempo
+          delay: 1000, // começa com 1s, depois 2s, depois 4s
+        },
       },
     );
     return {
@@ -199,6 +203,10 @@ export class AuthService {
         attempts: 3,
         removeOnFail: true,
         removeOnComplete: true,
+        backoff: {
+          type: 'exponential', // a cada falha, dobra o tempo
+          delay: 1000, // começa com 1s, depois 2s, depois 4s
+        },
       },
     );
     return {
@@ -241,6 +249,10 @@ export class AuthService {
         attempts: 3,
         removeOnFail: true,
         removeOnComplete: true,
+        backoff: {
+          type: 'exponential', // a cada falha, dobra o tempo
+          delay: 1000, // começa com 1s, depois 2s, depois 4s
+        },
       },
     );
     const fiveMinutesFromNow = new Date(Date.now() + 5 * 60 * 1000);
