@@ -27,7 +27,7 @@ interface UserValidatorProtocol {
 }
 
 @Injectable()
-export class UserValidatorService implements UserValidatorProtocol {
+export class UserValidatorBuilder implements UserValidatorProtocol {
   constructor(private userService: UsersService) {}
 
   validate(email: string): UserInitialChain {
@@ -35,11 +35,7 @@ export class UserValidatorService implements UserValidatorProtocol {
   }
 
   validateByUserId(userId: number): UserByIdInitialChain {
-    return new UserValidationChainInternal(
-      this.userService,
-      undefined,
-      userId,
-    );
+    return new UserValidationChainInternal(this.userService, undefined, userId);
   }
 }
 
@@ -97,4 +93,4 @@ class UserValidationChainInternal
   }
 }
 
-export default UserValidatorService;
+export default UserValidatorBuilder;
