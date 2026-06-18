@@ -1,0 +1,22 @@
+
+> toto-task-app@0.0.1 test:unit
+> jest --runInBand --detectOpenHandles test/unit/auth test/unit/email test/unit/employees test/unit/error.txt test/unit/shared test/unit/token test/unit/users
+
+FAIL test/unit/shared/builders/cookie-builder.unit.spec.ts
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+
+      at onResult (node_modules/@jest/core/build/index.js:1048:18)
+      at node_modules/@jest/core/build/index.js:1118:165
+      at node_modules/emittery/index.js:363:13
+          at Array.map (<anonymous>)
+      at Emittery.emit (node_modules/emittery/index.js:361:23)
+
+[Nest] 349090  - 17/06/2026, 22:32:06     LOG [EmployeesController] IP 127.0.0.1 is trying to access all employees with role INTERN
+
+Test Suites: 1 failed, 10 passed, 11 total
+Tests:       2 skipped, 56 passed, 58 total
+Snapshots:   0 total
+Time:        445.143 s
+Ran all test suites matching test/unit/auth|test/unit/email|test/unit/employees|test/unit/error.txt|test/unit/shared|test/unit/token|test/unit/users.

@@ -50,7 +50,6 @@ describe('EmailService (unit)', () => {
     it('should throw InternalServerErrorException when mailer fails', async () => {
       const MAIL_ERROR = new Error('smtp failed');
       mailerServiceMock.sendMail.mockRejectedValue(MAIL_ERROR);
-
       await expect(
         service.sendEmail(
           sendEmailDtoFixture.to,

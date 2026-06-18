@@ -1,4 +1,5 @@
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { getQueueToken } from '@nestjs/bullmq';
+import { HttpStatus } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
@@ -8,10 +9,14 @@ import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exc
 
 import { DatabaseService } from 'src/database/database.service';
 import { AuthService } from 'src/modules/auth/auth.service';
-import { EmailService } from 'src/modules/email/email.service';
+import { CookieService } from 'src/modules/auth/validators/cookie.service';
+import { TokenServiceValidator } from 'src/modules/auth/validators/token.service';
+import { UserValidatorService } from 'src/modules/auth/validators/user.service';
 import { TokenService } from 'src/modules/token/token.service';
 import { UsersService } from 'src/modules/users/users.service';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
+import TokenValidatorService from 'src/shared/builders/token.builder';
+import UserValidatorBuilder from 'src/shared/builders/user.builder';
 
 import {
   forgotPasswordDtoFixture,
@@ -28,12 +33,15 @@ import { databaseServiceMock } from 'test/mock/database.mock';
 import { replyMock } from 'test/mock/reply.mock';
 
 import {
-  emailServiceMock,
   jwtMock,
   loggerMock,
   tokenServiceMock,
   usersServiceMock,
 } from 'test/mock/services/authService.mock';
+
+const emailQueueMock = {
+  add: jest.fn(),
+};
 
 const JWT_TOKEN = 'jwt-token-123';
 const HASHED_PASSWORD = 'hashed-password';
@@ -52,12 +60,17 @@ describe('AuthService', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        CookieService,
+        TokenServiceValidator,
+        UserValidatorService,
+        UserValidatorBuilder,
+        TokenValidatorService,
         { provide: DatabaseService, useValue: databaseServiceMock },
         { provide: MyLoggerService, useValue: loggerMock },
         { provide: JwtService, useValue: jwtMock },
         { provide: UsersService, useValue: usersServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
-        { provide: EmailService, useValue: emailServiceMock },
+        { provide: getQueueToken('email'), useValue: emailQueueMock },
       ],
     }).compile();
 
@@ -124,7 +137,7 @@ describe('AuthService', () => {
 
       expect(usersServiceMock.create).toHaveBeenCalled();
 
-      expect(emailServiceMock.sendEmail).toHaveBeenCalled();
+      expect(emailQueueMock.add).toHaveBeenCalled();
 
       expect(result.token).toEqual(JWT_TOKEN);
       expect(result.success).toBe(true);
