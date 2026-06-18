@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bullmq';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseModule } from 'src/database/database.module';
@@ -13,6 +14,12 @@ import { MyLoggerModule } from 'src/my-logger/my-logger.module';
 import { userFixture } from 'test/fixtures/auth';
 import { emailServiceMock } from 'test/mock/services/emailService.mock';
 import { tokenServiceMock } from 'test/mock/services/tokenService.mock';
+import { CookieService } from 'src/modules/auth/validators/cookie.service';
+import { QueueService } from 'src/modules/auth/validators/queue.service';
+import { TokenServiceValidator } from 'src/modules/auth/validators/token.service';
+import TokenValidatorService from 'src/shared/builders/token.builder';
+import { UserValidatorService } from 'src/modules/auth/validators/user.service';
+import UserValidatorBuilder from 'src/shared/builders/user.builder';
 describe('signupService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
@@ -22,6 +29,12 @@ describe('signupService (integration)', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        CookieService,
+        QueueService,
+        TokenServiceValidator,
+        UserValidatorService,
+        UserValidatorBuilder,
+        TokenValidatorService,
         { provide: EmailService, useValue: emailServiceMock },
         { provide: TokenService, useValue: tokenServiceMock },
       ],
@@ -32,6 +45,17 @@ describe('signupService (integration)', () => {
         TokenModule,
         EmailModule,
         JwtModule.register({ secret: process.env.JWT_SECRET }),
+        BullModule.forRoot({
+          connection: {
+            url: process.env.REDIS,
+            tls: {},
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          },
+        }),
+        BullModule.registerQueue({
+          name: 'email',
+        }),
       ],
     }).compile();
 

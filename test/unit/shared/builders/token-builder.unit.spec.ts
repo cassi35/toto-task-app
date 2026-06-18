@@ -30,7 +30,7 @@ describe('TokenBuilder (unit)', () => {
     it('should get token', async () => {
       tokenServiceMock.findByToken.mockResolvedValue(tokenEntityFixture);
       const validatedToken = (await token()).get();
-
+      console.log('validatedToken', validatedToken);
       expect(tokenServiceMock.findByToken).toHaveBeenCalledWith(
         tokenEntityFixture.token,
       );

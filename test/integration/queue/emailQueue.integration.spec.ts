@@ -7,8 +7,10 @@ import { EmailProcessor } from 'src/modules/auth/queue/processors/email.processo
 import { EmailModule } from 'src/modules/email/email.module';
 import { EmailService } from 'src/modules/email/email.service';
 import { emails } from 'confidentials';
+
 console.log('REDIS URL:', process.env.REDIS);
 console.log('BASE URL:', process.env.BASE_URL);
+console.log('EMAILS:', emails);
 describe('EmailQueue (integration)', () => {
   let app: TestingModule;
   let emailQueue: Queue;
@@ -40,6 +42,8 @@ describe('EmailQueue (integration)', () => {
 
   beforeEach(async () => {
     await emailQueue.drain(true);
+    const counts = await emailQueue.getJobCounts();
+    console.log('Job counts before test:', counts);
     await emailQueue.obliterate();
     jest.clearAllMocks();
   });

@@ -25,8 +25,9 @@ import { BullModule } from '@nestjs/bullmq';
 import { CookieService } from 'src/modules/auth/validators/cookie.service';
 import { QueueService } from 'src/modules/auth/validators/queue.service';
 import { TokenServiceValidator } from 'src/modules/auth/validators/token.service';
-import UserValidatorService from 'src/shared/builders/user.builder';
 import TokenValidatorService from 'src/shared/builders/token.builder';
+import { UserValidatorService } from 'src/modules/auth/validators/user.service';
+import UserValidatorBuilder from 'src/shared/builders/user.builder';
 describe('loginService (integration)', () => {
   let service: AuthService;
   let db: DatabaseService;
@@ -40,6 +41,7 @@ describe('loginService (integration)', () => {
         QueueService,
         TokenServiceValidator,
         UserValidatorService,
+        UserValidatorBuilder,
         TokenValidatorService,
       ],
       imports: [

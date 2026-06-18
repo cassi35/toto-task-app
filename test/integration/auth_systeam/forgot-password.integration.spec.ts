@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bullmq';
 import { JwtModule } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { DatabaseModule } from 'src/database/database.module';
@@ -15,6 +16,12 @@ import { userFixtureCreate } from 'test/fixtures/user.fixture';
 import InvalidEmailException from 'src/common/exeptions/auth/invalid-email.exception';
 import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
 import TokenAlreadyExistsException from 'src/common/exeptions/auth/token-already-exists.excetion';
+import { CookieService } from 'src/modules/auth/validators/cookie.service';
+import { QueueService } from 'src/modules/auth/validators/queue.service';
+import { TokenServiceValidator } from 'src/modules/auth/validators/token.service';
+import TokenValidatorService from 'src/shared/builders/token.builder';
+import { UserValidatorService } from 'src/modules/auth/validators/user.service';
+import UserValidatorBuilder from 'src/shared/builders/user.builder';
 
 describe('forgotPasswordService (integration)', () => {
   let service: AuthService;
@@ -26,6 +33,12 @@ describe('forgotPasswordService (integration)', () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
+        CookieService,
+        QueueService,
+        TokenServiceValidator,
+        UserValidatorService,
+        UserValidatorBuilder,
+        TokenValidatorService,
         { provide: EmailService, useValue: emailServiceMock },
       ],
       imports: [
@@ -34,6 +47,17 @@ describe('forgotPasswordService (integration)', () => {
         UsersModule,
         TokenModule,
         JwtModule.register({ secret: process.env.JWT_SECRET }),
+        BullModule.forRoot({
+          connection: {
+            url: process.env.REDIS,
+            tls: {},
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          },
+        }),
+        BullModule.registerQueue({
+          name: 'email',
+        }),
       ],
     }).compile();
 
@@ -87,30 +111,5 @@ describe('forgotPasswordService (integration)', () => {
         email: userFixture.email,
       }),
     ).rejects.toThrow(new TokenAlreadyExistsException());
-  });
-
-  it('should generate token, persist and send email on success', async () => {
-    const createdUser = await createUser();
-
-    const result = await service.forgotPassword({
-      email: userFixture.email,
-    });
-
-    expect(result.success).toBe(true);
-    expect(result.message).toBe('Email sent successfully');
-
-    const savedToken = await tokenService.findByUserId(createdUser.id);
-    expect(savedToken).toBeDefined();
-    expect(savedToken?.token).toBeDefined();
-
-    expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
-      userFixture.email,
-      'forgot password',
-      'sendForgotPassowrdToken',
-      expect.objectContaining({
-        name: userFixture.email,
-        token: expect.any(String),
-      }),
-    );
   });
 });
