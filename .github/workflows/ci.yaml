@@ -28,6 +28,31 @@ jobs:
 
   integration:
     runs-on: ubuntu-latest
+    env:
+      NODE_ENV: test
+      JWT_SECRET: test-secret
+      SENDER_EMAIL_FROM_GMAIL: test@mail.com
+      SENHA_DE_APP: test
+      CLIENT_ID: test
+      CLIENT_SECRET_GOOGLE: test
+      REFRESH_TOKEN: test
+      EMAIL_USER: test@mail.com
+      CLIENT_ID_AUTH: test
+      CLIENT_SECRET_AUTH: test
+      CLIENT_SECRET_AZURE: test
+      TENANT_ID: test
+      CLIENT_ID_AZURE: test
+      MICROSOFT_AUTH_URL: ${{ secrets.MICROSOFT_AUTH_URL }}
+      GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
+      GOOGLE_LOGIN: ${{ secrets.GOOGLE_LOGIN }}
+      MICROSOFT_LOGIN: ${{ secrets.MICROSOFT_LOGIN }}
+      FRONTEND_URL_DEV: ${{ secrets.FRONTEND_URL_DEV }}
+      RENDER_BASE_URL: ${{ secrets.RENDER_BASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+      PORT: ${{ secrets.PORT }}
+      REDIS: ${{ secrets.REDIS }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
