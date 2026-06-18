@@ -56,13 +56,18 @@ jobs:
       CLIENT_SECRET_AZURE: test
       TENANT_ID: test
       CLIENT_ID_AZURE: test
-      MICROSOFT_AUTH_URL: http://localhost/microsoft/callback
-      GOOGLE_AUTH_URL: http://localhost/google/callback
-      GOOGLE_LOGIN: https://accounts.google.com/o/oauth2/v2/auth?
-      MICROSOFT_LOGIN: https://login.microsoftonline.com/common/oauth2/v2.0/authorize?
-      FRONTEND_URL_DEV: http://localhost:3000
-      RENDER_BASE_URL: http://localhost:3000
-      DATABASE_URL: postgres://postgres:postgres@localhost:5432/postgres
+      MICROSOFT_AUTH_URL: ${{ secrets.MICROSOFT_AUTH_URL }}
+      GOOGLE_AUTH_URL: ${{ secrets.GOOGLE_AUTH_URL }}
+      GOOGLE_LOGIN: ${{ secrets.GOOGLE_LOGIN }}
+      MICROSOFT_LOGIN: ${{ secrets.MICROSOFT_LOGIN }}
+      FRONTEND_URL_DEV: ${{ secrets.FRONTEND_URL_DEV }}
+      RENDER_BASE_URL: ${{ secrets.RENDER_BASE_URL }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
+      PORT: ${{ secrets.PORT }}
+      REDIS: ${{ secrets.REDIS }}
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

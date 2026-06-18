@@ -14,8 +14,15 @@ import { MicrosoftStrategy } from './stretegies/microsoft.strategy';
 import { OauthController } from './controllers/oauth2.controller';
 // import { AtStrategy } from 'src/common/strategies/at.strategy'
 import { QueueModule } from './queue/queue.module';
-import { TokenService } from './services/token/token.service';
-import { EmailService } from './services/email/email.service';
+
+import { EmailService } from '../email/email.service';
+import { TokenService } from '../token/token.service';
+import { TokenServiceValidator } from './validators/token.service';
+import { CookieService } from './validators/cookie.service';
+import { QueueService } from './validators/queue.service';
+import UserValidatorBuilder from 'src/shared/builders/user.builder';
+import { UserValidatorService } from './validators/user.service';
+import TokenValidatorService from 'src/shared/builders/token.builder';
 @Module({
   controllers: [AuthController, OauthController],
   providers: [
@@ -25,6 +32,12 @@ import { EmailService } from './services/email/email.service';
     MicrosoftStrategy,
     TokenService,
     EmailService,
+    TokenServiceValidator,
+    CookieService,
+    QueueService,
+    UserValidatorBuilder,
+    UserValidatorService,
+    TokenValidatorService,
   ],
   imports: [
     MyLoggerModule,

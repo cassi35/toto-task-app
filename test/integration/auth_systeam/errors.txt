@@ -1,0 +1,827 @@
+Tests:       1 skipped, 7 passed, 8 total
+Snapshots:   0 total
+Time:        10.183 s, estimated 12 s
+Ran all test suites matching test/integration/auth_systeam/login.integration.spec.ts.
+
+Jest has detected the following 1 open handle potentially keeping Jest from exiting:
+
+  ●  CustomGC
+
+      2 | // import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
+      3 | // import { HandlebarsAdapter } from '@nestjs-modules/mailer/dist/adapters/handlebars.adapter';
+    > 4 | import { HandlebarsAdapter } from '@nestjs-modules/mailer/adapters/handlebars.adapter';
+        | ^
+      5 | // const {
+      6 | //   HandlebarsAdapter,
+      7 | // } = require('@nestjs-modules/mailer/adapters/handlebars.adapter');
+
+      at Runtime._loadModule (node_modules/jest-runtime/build/index.js:936:29)
+      at Object.<anonymous> (node_modules/@css-inline/css-inline/index.js:190:31)
+      at Object.<anonymous> (node_modules/@nestjs-modules/mailer/dist/adapters/handlebars.adapter.js:7:22)
+      at Object.<anonymous> (src/modules/email/email.module.ts:4:1)
+      at Object.<anonymous> (test/integration/auth_systeam/login.integration.spec.ts:6:1)
+
+EXIT CODE: 0
+cassiano@cassiano-IdeaPad-3-15ALC6:~/projetosGithub/toto-task-app$ 
+cassiano@cassiano-IdeaPad-3-15ALC6:~/projetosGithub/toto-task-app$ npm run test:integration -- test/integration/auth_systeam/
+
+> toto-task-app@0.0.1 test:integration
+> jest --config ./test/jest-integration.json --forceExit test/integration/auth_systeam/
+
+ts-jest[ts-jest-transformer] (WARN) Define `ts-jest` config under `globals` is deprecated. Please do
+transform: {
+    <transform_regex>: ['ts-jest', { /* ts-jest config goes here in Jest */ }],
+},
+See more at https://kulshekhar.github.io/ts-jest/docs/getting-started/presets#advanced
+
+ RUNS  test/integration/auth_systeam/reset-password.integration.spec.ts
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "toto", schema "public" at "localhost:32788"
+
+🚀  Your database is now in sync with your Prisma schema. Done in 194ms
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 145ms
+ FAIL  test/integration/auth_systeam/reset-password.integration.spec.ts (7.86 s)
+  ● resetPasswordService (integration) › should throw if token not found
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/reset-password.integration.spec.ts:25:35)
+
+  ● resetPasswordService (integration) › should throw if token expired
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/reset-password.integration.spec.ts:25:35)
+
+  ● resetPasswordService (integration) › should throw if token is invalid (mismatch)
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/reset-password.integration.spec.ts:25:35)
+
+  ● resetPasswordService (integration) › should update password and consume token on success
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/reset-password.integration.spec.ts:25:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading '$disconnect')
+
+      50 |
+      51 |   afterAll(async () => {
+    > 52 |     await db.$disconnect();
+         |              ^
+      53 |   });
+      54 |
+      55 |   async function createResetTokenForUser(token = 'reset-token-123') {
+
+      at Object.<anonymous> (test/integration/auth_systeam/reset-password.integration.spec.ts:52:14)
+
+
+ RUNS  test/integration/auth_systeam/verify-email.integration.spec.ts
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "toto", schema "public" at "localhost:32789"
+
+🚀  Your database is now in sync with your Prisma schema. Done in 211ms
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 136ms
+ FAIL  test/integration/auth_systeam/verify-email.integration.spec.ts (6.98 s)
+  ● verifyEmailService (integration) › should throw if token not found
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/verify-email.integration.spec.ts:25:35)
+
+  ● verifyEmailService (integration) › should throw if token expired
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/verify-email.integration.spec.ts:25:35)
+
+  ● verifyEmailService (integration) › should throw if token is invalid (mismatch)
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/verify-email.integration.spec.ts:25:35)
+
+  ● verifyEmailService (integration) › should activate user, consume token and send welcome email on success
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      23 |
+      24 |   beforeAll(async () => {
+    > 25 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      26 |       providers: [
+      27 |         AuthService,
+      28 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/verify-email.integration.spec.ts:25:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading '$disconnect')
+
+      50 |
+      51 |   afterAll(async () => {
+    > 52 |     await db.$disconnect();
+         |              ^
+      53 |   });
+      54 |
+      55 |   async function createTokenForUser(options?: {
+
+      at Object.<anonymous> (test/integration/auth_systeam/verify-email.integration.spec.ts:52:14)
+
+
+ RUNS  test/integration/auth_systeam/oauth.integration.spec.ts
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "toto", schema "public" at "localhost:32790"
+
+🚀  Your database is now in sync with your Prisma schema. Done in 210ms
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 169ms
+ FAIL  test/integration/auth_systeam/oauth.integration.spec.ts (7.187 s)
+  ● oauthService (integration) › should create user on first oauth login and send welcome email
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      20 |
+      21 |   beforeAll(async () => {
+    > 22 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      23 |       providers: [
+      24 |         AuthService,
+      25 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/oauth.integration.spec.ts:22:35)
+
+  ● oauthService (integration) › should throw when user creation fails
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      20 |
+      21 |   beforeAll(async () => {
+    > 22 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      23 |       providers: [
+      24 |         AuthService,
+      25 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/oauth.integration.spec.ts:22:35)
+
+  ● oauthService (integration) › should login existing oauth user and set cookie
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      20 |
+      21 |   beforeAll(async () => {
+    > 22 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      23 |       providers: [
+      24 |         AuthService,
+      25 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/oauth.integration.spec.ts:22:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading '$disconnect')
+
+      46 |
+      47 |   afterAll(async () => {
+    > 48 |     await db.$disconnect();
+         |              ^
+      49 |   });
+      50 |
+      51 |   const oauthFixture: OauthUser = {
+
+      at Object.<anonymous> (test/integration/auth_systeam/oauth.integration.spec.ts:48:14)
+
+
+ RUNS  test/integration/auth_systeam/forgot-password.integration.spec.ts
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "toto", schema "public" at "localhost:32791"
+
+🚀  Your database is now in sync with your Prisma schema. Done in 232ms
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 477ms
+ FAIL  test/integration/auth_systeam/forgot-password.integration.spec.ts (8.972 s)
+  ● forgotPasswordService (integration) › should throw if email is invalid
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      24 |
+      25 |   beforeAll(async () => {
+    > 26 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      27 |       providers: [
+      28 |         AuthService,
+      29 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/forgot-password.integration.spec.ts:26:35)
+
+  ● forgotPasswordService (integration) › should throw if user not found
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      24 |
+      25 |   beforeAll(async () => {
+    > 26 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      27 |       providers: [
+      28 |         AuthService,
+      29 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/forgot-password.integration.spec.ts:26:35)
+
+  ● forgotPasswordService (integration) › should throw if token already exists
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      24 |
+      25 |   beforeAll(async () => {
+    > 26 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      27 |       providers: [
+      28 |         AuthService,
+      29 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/forgot-password.integration.spec.ts:26:35)
+
+  ● forgotPasswordService (integration) › should generate token, persist and send email on success
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      24 |
+      25 |   beforeAll(async () => {
+    > 26 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      27 |       providers: [
+      28 |         AuthService,
+      29 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/forgot-password.integration.spec.ts:26:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading '$disconnect')
+
+      51 |
+      52 |   afterAll(async () => {
+    > 53 |     await db.$disconnect();
+         |              ^
+      54 |   });
+      55 |
+      56 |   async function createUser() {
+
+      at Object.<anonymous> (test/integration/auth_systeam/forgot-password.integration.spec.ts:53:14)
+
+
+ RUNS  test/integration/auth_systeam/signup.integration.spec.ts
+Environment variables loaded from .env
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": PostgreSQL database "toto", schema "public" at "localhost:32792"
+
+🚀  Your database is now in sync with your Prisma schema. Done in 241ms
+
+✔ Generated Prisma Client (v6.19.2) to ./node_modules/@prisma/client in 717ms
+ FAIL  test/integration/auth_systeam/signup.integration.spec.ts (10.464 s)
+  ● Console
+
+    console.log
+      HandlebarsAdapter tipo: function
+
+      at Object.<anonymous> (src/modules/email/email.module.ts:15:9)
+
+    console.log
+      keys: []
+
+      at Object.<anonymous> (src/modules/email/email.module.ts:16:9)
+
+  ● signupService (integration) › should throw if email is invalid
+
+    Nest can't resolve dependencies of the AuthService (?, DatabaseService, MyLoggerService, UsersService, TokenService, CookieService, TokenServiceValidator, UserValidatorService). Please make sure that the argument "BullQueue_email" at index [0] is available in the RootTestModule module.
+
+    Potential solutions:
+    - Is RootTestModule a valid NestJS module?
+    - If "BullQueue_email" is a provider, is it part of the current RootTestModule?
+    - If "BullQueue_email" is exported from a separate @Module, is that module imported within RootTestModule?
+      @Module({
+        imports: [ /* the Module containing "BullQueue_email" */ ]
+      })
+
+    For more common dependency resolution issues, see: https://docs.nestjs.com/faq/common-errors
+
+      20 |   let tokenService: TokenService;
+      21 |   beforeEach(async () => {
+    > 22 |     const module: TestingModule = await Test.createTestingModule({
+         |                                   ^
+      23 |       providers: [
+      24 |         AuthService,
+      25 |         { provide: EmailService, useValue: emailServiceMock },
+
+      at TestingInjector.lookupComponentInParentModules (node_modules/@nestjs/core/injector/injector.js:290:19)
+      at TestingInjector.resolveComponentWrapper (node_modules/@nestjs/testing/testing-injector.js:19:45)
+      at resolveParam (node_modules/@nestjs/core/injector/injector.js:140:38)
+          at async Promise.all (index 0)
+      at TestingInjector.resolveConstructorParams (node_modules/@nestjs/core/injector/injector.js:169:27)
+      at TestingInjector.loadInstance (node_modules/@nestjs/core/injector/injector.js:75:13)
+      at TestingInjector.loadProvider (node_modules/@nestjs/core/injector/injector.js:103:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:56:13
+          at async Promise.all (index 3)
+      at TestingInstanceLoader.createInstancesOfProviders (node_modules/@nestjs/core/injector/instance-loader.js:55:9)
+      at node_modules/@nestjs/core/injector/instance-loader.js:40:13
+          at async Promise.all (index 1)
+      at TestingInstanceLoader.createInstances (node_modules/@nestjs/core/injector/instance-loader.js:39:9)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/core/injector/instance-loader.js:22:13)
+      at TestingInstanceLoader.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-instance-loader.js:9:9)
+      at TestingModuleBuilder.createInstancesOfDependencies (node_modules/@nestjs/testing/testing-module.builder.js:118:9)
+      at TestingModuleBuilder.compile (node_modules/@nestjs/testing/testing-module.builder.js:74:9)
+      at Object.<anonymous> (test/integration/auth_systeam/signup.integration.spec.ts:22:35)
+
+
+  ● Test suite failed to run
+
+    TypeError: Cannot read properties of undefined (reading '$disconnect')
+
+      47 |   });
+      48 |   afterAll(async () => {
+    > 49 |     await db.$disconnect();
+         |              ^
+      50 |   });
+      51 |   it.skip('should signup a user sucecessfully', async () => {
+      52 |     const result = await service.singup(userFixture);
+
+      at Object.<anonymous> (test/integration/auth_systeam/signup.integration.spec.ts:49:14)

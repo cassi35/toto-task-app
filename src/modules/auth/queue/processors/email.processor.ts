@@ -1,9 +1,9 @@
-import { Processor, WorkerHost } from '@nestjs/bullmq';
+import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { EmailService } from 'src/modules/email/email.service';
 import { EmailJob } from 'src/modules/email/types/email.types';
-
-@Processor('email')
+import * as chalk from 'chalk';
+@Processor('email', { concurrency: 3 })
 export class EmailProcessor extends WorkerHost {
   constructor(private readonly emailService: EmailService) {
     super();
@@ -11,11 +11,28 @@ export class EmailProcessor extends WorkerHost {
   async process(job: Job<EmailJob>): Promise<any> {
     switch (job.data.type) {
       case 'welcome':
-        break;
+        return await this.emailService.sendEmail(
+          job.data.data.email,
+          'Welcome to Toto Task App',
+          'welcome',
+          {
+            name: job.data.data.email,
+          },
+        );
       case 'sendForgotPassowrdToken':
-        break;
+        return await this.emailService.sendEmail(
+          job.data.data.email,
+          'Reset your password',
+          'sendForgotPassowrdToken',
+          {
+            name: job.data.data.email,
+            resetPasswordUrl: `${process.env.RENDER_BASE_URL}/api/auth/reset-password?token=${job.data.data.token}`,
+            token: job.data.data.token,
+            expiresIn: '10',
+          },
+        );
       case 'sendtoken':
-        await this.emailService.sendEmail(
+        return await this.emailService.sendEmail(
           job.data.data.email,
           'verification token',
           'sendtoken',
@@ -26,7 +43,27 @@ export class EmailProcessor extends WorkerHost {
             expiresIn: '10',
           },
         );
-        break;
+      default:
+        throw new Error(`Invalid job type: ${job.data.type}`);
     }
+  }
+  @OnWorkerEvent('progress')
+  onProgress(job: Job<EmailJob>) {
+    console.log(
+      `Job ${job.id} email:${chalk.yellow(job.data.data.email)} ${chalk.blue('progess')}`,
+    );
+  }
+
+  @OnWorkerEvent('completed')
+  onCompleted(job: Job<EmailJob>) {
+    console.log(
+      `Job ${job.id} ${chalk.green('completed')}.  email:${chalk.yellow(job.data.data.email)}`,
+    );
+  }
+  @OnWorkerEvent('failed')
+  onFailed(job: Job<EmailJob>, error: Error) {
+    console.log(
+      `Job ${job.id} failed with error: ${chalk.red(error.message)}  email:${chalk.yellow(job.data.data.email)}`,
+    );
   }
 }

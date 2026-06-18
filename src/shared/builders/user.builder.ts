@@ -1,47 +1,88 @@
-import { User } from 'src/generated/dto/user.entity';
-
-import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
+import { Injectable } from '@nestjs/common';
+import { User } from '@prisma/client';
+import UserAlreadyExistsException from 'src/common/exeptions/users/user-already-exists.exception';
+import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
 import UserNotActiveException from 'src/common/exeptions/users/user-not-active.exception';
-import { CreateUserDto } from 'src/generated/dto/create-user.dto';
+import UserNotFoundException from 'src/common/exeptions/users/user-not-found.exception';
 import { UsersService } from 'src/modules/users/users.service';
-interface UserValidatorProtocol {
-  verifyCreationByEmail(user: CreateUserDto): Promise<this>;
-  verifyCreationById(id: number): Promise<this>;
-  isActive(active: boolean, id: number): Promise<this>;
+
+interface UserInitialChain {
+  exists(): Promise<UserValidationChain>;
+  doesNotExist(): Promise<void>;
+  wasCreated(): Promise<UserValidationChain>;
+}
+
+interface UserByIdInitialChain {
+  existsByUserId(): Promise<UserValidationChain>;
+}
+
+export interface UserValidationChain {
+  isActive(): this;
   get(): User;
 }
-class UserValidatorService {
+
+interface UserValidatorProtocol {
+  validate(email: string): UserInitialChain;
+  validateByUserId(userId: number): UserByIdInitialChain;
+}
+
+@Injectable()
+export class UserValidatorBuilder implements UserValidatorProtocol {
   constructor(private userService: UsersService) {}
-  validate(user: CreateUserDto) {
-    return new UserValidator(user, this.userService);
+
+  validate(email: string): UserInitialChain {
+    return new UserValidationChainInternal(this.userService, email);
+  }
+
+  validateByUserId(userId: number): UserByIdInitialChain {
+    return new UserValidationChainInternal(this.userService, undefined, userId);
   }
 }
-class UserValidator implements UserValidatorProtocol {
+
+class UserValidationChainInternal
+  implements UserInitialChain, UserByIdInitialChain, UserValidationChain
+{
   private userData: User | null = null;
-  private user: User | null = null;
+
   constructor(
-    user: User,
     private userService: UsersService,
-  ) {
-    this.user = user;
-  }
-  async verifyCreationByEmail(user: CreateUserDto): Promise<this> {
-    this.userData = await this.userService.finEmail(user.email);
+    private email?: string,
+    private userId?: number,
+  ) {}
+
+  async exists(): Promise<UserValidationChain> {
+    this.userData = await this.userService.finEmail(this.email!);
     if (!this.userData) {
       throw new UserNotFoundException();
     }
     return this;
   }
-  async verifyCreationById(id: number): Promise<this> {
-    this.userData = await this.userService.findByUserId(id);
+
+  async existsByUserId(): Promise<UserValidationChain> {
+    this.userData = await this.userService.findByUserId(this.userId!);
     if (!this.userData) {
       throw new UserNotFoundException();
     }
     return this;
   }
-  async isActive(active: boolean, id: number): Promise<this> {
-    this.userData = await this.userService.findByUserId(id);
+
+  async doesNotExist(): Promise<void> {
+    this.userData = await this.userService.finEmail(this.email!);
+    if (this.userData) {
+      throw new UserAlreadyExistsException();
+    }
+  }
+
+  async wasCreated(): Promise<UserValidationChain> {
+    this.userData = await this.userService.finEmail(this.email!);
     if (!this.userData) {
+      throw new UserCreationFailedException();
+    }
+    return this;
+  }
+
+  isActive(): this {
+    if (!this.userData!.isActive) {
       throw new UserNotActiveException();
     }
     return this;
@@ -51,4 +92,5 @@ class UserValidator implements UserValidatorProtocol {
     return this.userData as User;
   }
 }
-export default UserValidatorService;
+
+export default UserValidatorBuilder;
