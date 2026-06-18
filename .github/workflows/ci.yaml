@@ -65,6 +65,8 @@ jobs:
       DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
       PORT: ${{ secrets.PORT }}
       REDIS: redis://localhost:6379
+      UPSTASH_REDIS_REST_URL: ${{ secrets.UPSTASH_REDIS_REST_URL }}
+      UPSTASH_REDIS_REST_TOKEN: ${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
 
     steps:
       - uses: actions/checkout@v4
