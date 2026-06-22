@@ -7,6 +7,7 @@ import {
   Res,
   Req,
   HttpStatus,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '../auth.service';
 import { MyLoggerService } from 'src/my-logger/my-logger.service';
@@ -23,6 +24,7 @@ import {
   PrivateRouteAuth,
   PublicAuthRoute,
 } from 'src/common/decorators/public-router-auth.decorator';
+import { AtGuard } from 'src/common/guards/auth.guard';
 @Controller(AuthRouter.BASE)
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
@@ -70,8 +72,7 @@ export class AuthController {
   verifyEmail(@Query('token') token: string) {
     return this.authService.verifyEmail(token);
   }
-
-  @Public()
+  @UseGuards(AtGuard)
   @Get(AuthRouter.ME)
   me(@Req() req: AuthenticatedRequest) {
     return this.authService.me(req);

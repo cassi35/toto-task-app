@@ -2,7 +2,7 @@ import { OnWorkerEvent, Processor, WorkerHost } from '@nestjs/bullmq';
 import { Job } from 'bullmq';
 import { EmailService } from 'src/modules/email/email.service';
 import { EmailJob } from 'src/modules/email/types/email.types';
-import * as chalk from 'chalk';
+import chalk from 'chalk';
 @Processor('email', { concurrency: 3 })
 export class EmailProcessor extends WorkerHost {
   constructor(private readonly emailService: EmailService) {

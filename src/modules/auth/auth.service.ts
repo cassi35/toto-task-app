@@ -33,6 +33,7 @@ export class AuthService {
     private userValidator: UserValidatorService,
   ) {}
   async me(req: AuthenticatedRequest): Promise<MeDto> {
+    console.log(req.user);
     return {
       email: req.user.email,
       id: req.user.id,

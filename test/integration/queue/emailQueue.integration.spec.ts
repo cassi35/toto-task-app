@@ -31,7 +31,6 @@ describe('EmailQueue (integration)', () => {
         }),
         EmailModule,
       ],
-
       providers: [EmailProcessor],
     }).compile();
     app = module;

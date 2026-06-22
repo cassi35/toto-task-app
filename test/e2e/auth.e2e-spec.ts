@@ -146,11 +146,24 @@ describe('Auth System (e2e)', () => {
       console.log(response);
     });
   });
-  describe('should forgot password /auth/forgot-password', () => {
+  describe.skip('should forgot password /auth/forgot-password', () => {
     it('should reset password', async () => {});
   });
   describe.skip('should reset password /auth/reset-password', () => {});
   describe.skip('should login oaoth /auth/oauth', () => {});
+  describe('should get user info /auth/me', () => {
+    it('should return user info', async () => {
+      await signupUser();
+      await isActive();
+      const login = await loginUser();
+      const cookies = login.headers['set-cookie'];
+      console.log(cookies);
+      const me = await request(app.getHttpServer())
+        .get(`/${AuthRouter.BASE}/${AuthRouter.ME}`)
+        .set('Cookie', cookies);
+      console.log(`aqui deveria retornar o body`, me.body);
+    });
+  });
 });
 //um it testa um comportamento observável
 /* 
