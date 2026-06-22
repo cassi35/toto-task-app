@@ -25,7 +25,7 @@ import { BullModule } from '@nestjs/bullmq';
     BullModule.forRoot({
       connection: {
         url: process.env.REDIS,
-        tls: {},
+        tls: process.env.REDIS?.startsWith('rediss://') ? {} : undefined,
         maxRetriesPerRequest: null,
         enableReadyCheck: false,
       },
