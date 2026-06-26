@@ -63,7 +63,6 @@ export class AuthService {
     return await reply.status(302).redirect(url);
   }
   async loginOauth(req: OauthUser, reply: FastifyReply) {
-    this.logger.log(`loginOauth: ${JSON.stringify(req)}`);
     const user = await this.userService.finEmail(req.email);
     if (!user) {
       await this.userService.create({
@@ -82,24 +81,20 @@ export class AuthService {
         userCreated.email,
       );
       this.cookieService.setTokenCookie(reply, token);
-      void this.emailQueue
-        .add(
-          'process',
-          {
-            type: 'welcome',
-            data: {
-              email: userCreated.email,
-            },
+      void this.emailQueue.add(
+        'process',
+        {
+          type: 'welcome',
+          data: {
+            email: userCreated.email,
           },
-          {
-            attempts: 3,
-            removeOnFail: true,
-            removeOnComplete: true,
-          },
-        )
-        .catch((err) => {
-          this.logger.error('erro em enfileirar', err);
-        });
+        },
+        {
+          attempts: 3,
+          removeOnFail: true,
+          removeOnComplete: true,
+        },
+      );
       return {
         success: true,
         statusCode: 200,
@@ -127,7 +122,7 @@ export class AuthService {
       user.password ?? '',
     );
     const token = await this.cookieService.genarateJWT(user.id, user.email);
-    await this.emailQueue.add(
+    void this.emailQueue.add(
       'process',
       {
         type: 'welcome',
@@ -178,7 +173,7 @@ export class AuthService {
       fiveMinutesFromNow,
     );
 
-    await this.emailQueue.add(
+    void this.emailQueue.add(
       'process',
       {
         type: 'sendtoken',
@@ -217,7 +212,7 @@ export class AuthService {
       isActive: true,
     });
     await this.tokenService.consumeToken(token);
-    await this.emailQueue.add(
+    void this.emailQueue.add(
       'process',
       {
         type: 'welcome',
@@ -262,7 +257,7 @@ export class AuthService {
     ).get();
     await this.tokenValidator.ensureUserDoesNotHaveToken(user.id);
     const tokenVerification = this.cookieService.generateToken();
-    await this.emailQueue.add(
+    void this.emailQueue.add(
       'process',
       {
         type: 'sendForgotPassowrdToken',
