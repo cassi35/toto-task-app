@@ -20,7 +20,6 @@ import { TokenServiceValidator } from './validators/token.service';
 import { CookieService } from './validators/cookie.service';
 import { UserValidatorService } from './validators/user.service';
 import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
-import chalk from 'chalk';
 @Injectable()
 export class AuthService {
   constructor(
@@ -77,17 +76,12 @@ export class AuthService {
       const userCreated = (
         await this.userValidator.ensureUserWasCreated(req.email)
       ).get();
-      console.log(`user criando ... ${chalk.yellow(req.email)}`);
-      if (!userCreated) {
-        throw new UserCreationFailedException();
-      }
-      console.log(`user criando com sucesso ... ${chalk.green(req.email)}`);
+
       const token = await this.cookieService.genarateJWT(
         userCreated.id,
         userCreated.email,
       );
       this.cookieService.setTokenCookie(reply, token);
-      console.log('token criado ');
       void this.emailQueue
         .add(
           'process',
@@ -106,7 +100,6 @@ export class AuthService {
         .catch((err) => {
           this.logger.error('erro em enfileirar', err);
         });
-      console.log('email na fila para envio de boas vindas');
       return {
         success: true,
         statusCode: 200,
