@@ -19,7 +19,8 @@ import { EmailJob } from '../email/types/email.types';
 import { TokenServiceValidator } from './validators/token.service';
 import { CookieService } from './validators/cookie.service';
 import { UserValidatorService } from './validators/user.service';
-
+import UserCreationFailedException from 'src/common/exeptions/users/user-creation-failed.exception';
+import chalk from 'chalk';
 @Injectable()
 export class AuthService {
   constructor(
@@ -63,6 +64,7 @@ export class AuthService {
     return await reply.status(302).redirect(url);
   }
   async loginOauth(req: OauthUser, reply: FastifyReply) {
+    this.logger.log(`loginOauth: ${JSON.stringify(req)}`);
     const user = await this.userService.finEmail(req.email);
     if (!user) {
       await this.userService.create({
@@ -75,40 +77,51 @@ export class AuthService {
       const userCreated = (
         await this.userValidator.ensureUserWasCreated(req.email)
       ).get();
-
+      console.log(`user criando ... ${chalk.yellow(req.email)}`);
+      if (!userCreated) {
+        throw new UserCreationFailedException();
+      }
+      console.log(`user criando com sucesso ... ${chalk.green(req.email)}`);
       const token = await this.cookieService.genarateJWT(
         userCreated.id,
         userCreated.email,
       );
       this.cookieService.setTokenCookie(reply, token);
-      await this.emailQueue.add(
-        'process',
-        {
-          type: 'welcome',
-          data: {
-            email: userCreated.email,
+      console.log('token criado ');
+      void this.emailQueue
+        .add(
+          'process',
+          {
+            type: 'welcome',
+            data: {
+              email: userCreated.email,
+            },
           },
-        },
-        {
-          attempts: 3,
-          removeOnFail: true,
-          removeOnComplete: true,
-        },
-      );
+          {
+            attempts: 3,
+            removeOnFail: true,
+            removeOnComplete: true,
+          },
+        )
+        .catch((err) => {
+          this.logger.error('erro em enfileirar', err);
+        });
+      console.log('email na fila para envio de boas vindas');
       return {
         success: true,
         statusCode: 200,
-        message: 'Login successful',
+        message: `login successful with google first time`,
         token,
         verified: userCreated.isActive,
       };
     }
     const token = await this.cookieService.genarateJWT(user.id, user.email);
     this.cookieService.setTokenCookie(reply, token);
+    console.log(user);
     return {
       success: true,
       statusCode: 200,
-      message: 'Login successful',
+      message: 'Login successful  with google',
       token,
       verified: user.isActive,
     };
@@ -121,6 +134,25 @@ export class AuthService {
       user.password ?? '',
     );
     const token = await this.cookieService.genarateJWT(user.id, user.email);
+    await this.emailQueue.add(
+      'process',
+      {
+        type: 'welcome',
+        data: {
+          email: user.email,
+        },
+      },
+      {
+        attempts: 3,
+        removeOnFail: true,
+        removeOnComplete: true,
+        backoff: {
+          type: 'exponential', // a cada falha, dobra o tempo
+          delay: 1000, // começa com 1s, depois 2s, depois 4s
+        },
+      },
+    );
+
     this.cookieService.setTokenCookie(reply, token);
     return {
       success: true,

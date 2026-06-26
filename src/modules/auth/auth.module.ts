@@ -6,7 +6,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { DatabaseModule } from 'src/database/database.module';
 
 import { MyLoggerModule } from 'src/my-logger/my-logger.module';
-import { EmailModule } from '../email/email.module';
 import { TokenModule } from '../token/token.module';
 import { AtStrategy } from 'src/common/strategies/at.strategy';
 import { GoogleStrategy } from './stretegies/google.strategy';
@@ -15,7 +14,6 @@ import { OauthController } from './controllers/oauth2.controller';
 // import { AtStrategy } from 'src/common/strategies/at.strategy'
 import { QueueModule } from './queue/queue.module';
 
-import { EmailService } from '../email/email.service';
 import { TokenService } from '../token/token.service';
 import { TokenServiceValidator } from './validators/token.service';
 import { CookieService } from './validators/cookie.service';
@@ -31,7 +29,6 @@ import TokenValidatorService from 'src/shared/builders/token.builder';
     GoogleStrategy,
     MicrosoftStrategy,
     TokenService,
-    EmailService,
     TokenServiceValidator,
     CookieService,
     QueueService,
@@ -45,7 +42,6 @@ import TokenValidatorService from 'src/shared/builders/token.builder';
     JwtModule.register({}),
     DatabaseModule,
     UsersModule,
-    EmailModule,
     TokenModule,
     QueueModule,
   ],

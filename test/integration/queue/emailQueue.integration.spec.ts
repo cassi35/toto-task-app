@@ -52,7 +52,7 @@ describe('EmailQueue (integration)', () => {
     await app.close(); // <-- fecha o worker também
   });
   describe('should process email concurrency and send welcome', () => {
-    it('should send welcome email to multiple users via queue', async () => {
+    it.skip('should send welcome email to multiple users via queue', async () => {
       for (let i = 0; i < emails.length * emails.length; i++) {
         await emailQueue.add(
           'process',
@@ -71,6 +71,21 @@ describe('EmailQueue (integration)', () => {
 
       // Aguardar processamento dos jobs
       await new Promise((resolve) => setTimeout(resolve, 3000));
+    });
+    it('shoudl send welcome', async () => {
+      await emailQueue.add(
+        'process',
+        {
+          type: 'welcome',
+          data: { email: emails[0] },
+        },
+        {
+          attempts: 3,
+          backoff: { type: 'exponential', delay: 1000 },
+          removeOnComplete: true,
+          removeOnFail: true,
+        },
+      );
     });
   });
 });

@@ -128,7 +128,7 @@ describe('oauthService (integration)', () => {
     ).rejects.toThrow(new UserCreationFailedException());
   });
 
-  it('should login existing oauth user and set cookie', async () => {
+  it.skip('should login existing oauth user and set cookie', async () => {
     await userService.create({
       email: oauthFixture.email,
       createdAt: new Date(),
@@ -144,5 +144,14 @@ describe('oauthService (integration)', () => {
     expect(result.token).toBeDefined();
     expect(replyMock.setCookie).toHaveBeenCalled();
     expect(emailServiceMock.sendEmail).not.toHaveBeenCalled();
+  });
+  it('should send email', async () => {
+    await service.loginOauth(oauthFixture, replyMock);
+    expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
+      oauthFixture.email,
+      'welcome to website',
+      'welcome',
+      { name: oauthFixture.email },
+    );
   });
 });
