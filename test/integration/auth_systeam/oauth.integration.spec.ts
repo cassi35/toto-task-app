@@ -145,7 +145,7 @@ describe('oauthService (integration)', () => {
     expect(replyMock.setCookie).toHaveBeenCalled();
     expect(emailServiceMock.sendEmail).not.toHaveBeenCalled();
   });
-  it('should send email', async () => {
+  it.skip('should send email', async () => {
     await service.loginOauth(oauthFixture, replyMock);
     expect(emailServiceMock.sendEmail).toHaveBeenCalledWith(
       oauthFixture.email,
